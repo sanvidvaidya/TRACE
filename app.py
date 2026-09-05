@@ -1,5 +1,6 @@
 """TRACE — From Ambiguous Intent to Executable Systems
-A portfolio-grade systems analysis workspace and requirements engineering engine.
+A complete, self-contained systems analysis workspace and requirements engineering engine.
+Run with: python -m streamlit run app.py
 """
 
 from enum import Enum
@@ -20,6 +21,7 @@ import streamlit as st
 
 
 def get_stretch_kw(func):
+    """Adapts dynamically to eliminate deprecation warnings on Streamlit 1.63+."""
     try:
         sig = inspect.signature(func)
         if "width" in sig.parameters:
@@ -30,7 +32,7 @@ def get_stretch_kw(func):
 
 
 # ==============================================================================
-# 1. CORE ONTOLOGY & DATA MODELS
+# 1. CORE ONTOLOGY & DOMAIN DATA MODELS
 # ==============================================================================
 
 
@@ -189,7 +191,7 @@ class TraceEdge(BaseModel):
 
 
 # ==============================================================================
-# 2. TRACEABILITY GRAPH ENGINE
+# 2. IN-MEMORY GRAPH ENGINE
 # ==============================================================================
 
 
@@ -914,7 +916,7 @@ MODERN_CSS = """
 :root {
     --bg-base: #070B16;
     --text-primary: #F8FAFC;
-    --text-secondary: #CBD5E1;
+    --text-secondary: #E2E8F0;
     --text-tertiary: #94A3B8;
     --accent-cyan: #06B6D4;
     --accent-emerald: #10B981;
@@ -941,8 +943,80 @@ MODERN_CSS = """
 }
 
 /* ==========================================================================
-   PROTECTED ICON FONT FIX: Eliminates ligature text rendering on expanders/collapse
+   FIX 1: Header Toolbar & Action Icons Crisp White
    ========================================================================== */
+header[data-testid="stHeader"] { 
+    background: transparent !important; 
+}
+header[data-testid="stHeader"] button,
+header[data-testid="stHeader"] svg,
+[data-testid="stToolbar"] button,
+[data-testid="stToolbar"] svg,
+[data-testid="stStatusWidget"] button,
+[data-testid="stStatusWidget"] svg,
+.stAppDeployButton button,
+.stAppDeployButton svg {
+    color: #FFFFFF !important;
+    fill: #FFFFFF !important;
+    stroke: #FFFFFF !important;
+    opacity: 0.92 !important;
+}
+header[data-testid="stHeader"] button:hover svg,
+[data-testid="stToolbar"] button:hover svg {
+    opacity: 1 !important;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.75)) !important;
+}
+
+/* ==========================================================================
+   FIX 2: High-Visibility White Sidebar Radio Labels
+   ========================================================================== */
+[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    background: transparent !important;
+    padding: 3px 0 !important;
+}
+[data-testid="stSidebar"] [data-testid="stRadio"] label p {
+    color: #F8FAFC !important;
+    font-weight: 500 !important;
+    font-size: 0.88rem !important;
+    opacity: 0.9 !important;
+    transition: color 0.15s ease, opacity 0.15s ease !important;
+}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:hover p {
+    color: #22D3EE !important;
+    opacity: 1 !important;
+}
+
+/* ==========================================================================
+   FIX 3: Visible Expander Header & Chevron Toggle
+   ========================================================================== */
+[data-testid="stExpander"] {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 8px !important;
+}
+[data-testid="stExpander"] summary {
+    color: #F8FAFC !important;
+    opacity: 1 !important;
+}
+[data-testid="stExpander"] summary p {
+    color: #F8FAFC !important;
+    font-family: var(--font-mono) !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+    opacity: 1 !important;
+}
+[data-testid="stExpander"] summary svg,
+[data-testid="stExpanderToggleIcon"] svg {
+    color: #F8FAFC !important;
+    fill: #F8FAFC !important;
+    opacity: 0.9 !important;
+}
+[data-testid="stExpander"] summary:hover p {
+    color: #22D3EE !important;
+}
+
+/* Protected Icon Font Rule */
 span[data-testid="stIconMaterial"],
 [data-testid="stSidebarCollapseButton"] span,
 [data-testid="stExpanderToggleIcon"] span,
@@ -958,14 +1032,13 @@ span[data-testid="stIconMaterial"],
     direction: ltr !important;
 }
 
-header[data-testid="stHeader"] { background: transparent !important; }
 footer { visibility: hidden !important; }
 #MainMenu { visibility: hidden !important; }
 
 /* Sidebar Precision */
 [data-testid="stSidebar"] {
-    background: rgba(8, 14, 28, 0.88) !important;
-    backdrop-filter: blur(22px) !important;
+    background: rgba(8, 14, 28, 0.92) !important;
+    backdrop-filter: blur(24px) !important;
     border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
@@ -977,7 +1050,7 @@ h1, h2, h3, h4 {
     letter-spacing: -0.03em !important;
 }
 
-/* HERO SECTION ON LANDING PAGE */
+/* Hero Section */
 .hero-container {
     padding: 48px 0 32px 0;
     text-align: center;
@@ -1017,7 +1090,7 @@ h1, h2, h3, h4 {
     font-weight: 400;
 }
 
-/* INTERACTIVE FEATURE SHOWCASE TILES */
+/* Feature Showcase Tiles */
 .feature-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1057,7 +1130,7 @@ h1, h2, h3, h4 {
     line-height: 1.6;
 }
 
-/* TELEMETRY METRIC CARDS */
+/* Telemetry Cards */
 .telemetry-card {
     background: linear-gradient(135deg, rgba(30, 41, 59, 0.72) 0%, rgba(15, 23, 42, 0.82) 100%);
     backdrop-filter: blur(18px);
@@ -1089,7 +1162,7 @@ h1, h2, h3, h4 {
 .telemetry-label {
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    color: var(--text-tertiary);
+    color: #CBD5E1;
     text-transform: uppercase;
     letter-spacing: 0.09em;
     font-weight: 600;
@@ -1103,7 +1176,7 @@ h1, h2, h3, h4 {
     margin-top: 6px;
 }
 
-/* ENTITY INSPECTION CARDS */
+/* Entity Cards */
 .entity-card {
     background: linear-gradient(180deg, rgba(26, 36, 58, 0.65) 0%, rgba(15, 23, 42, 0.8) 100%);
     backdrop-filter: blur(14px);
@@ -1154,7 +1227,7 @@ h1, h2, h3, h4 {
     border-top: 1px dashed rgba(255, 255, 255, 0.06);
 }
 
-/* CHIP BADGES */
+/* Badges */
 .chip {
     font-family: var(--font-mono);
     font-size: 0.70rem;
@@ -1170,7 +1243,7 @@ h1, h2, h3, h4 {
 .chip-amber { background: rgba(245, 158, 11, 0.15); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.35); }
 .chip-rose { background: rgba(244, 63, 94, 0.15); color: #FB7185; border: 1px solid rgba(244, 63, 94, 0.35); }
 
-/* PROVENANCE TERMINAL */
+/* Provenance Terminal */
 .provenance-terminal {
     background: rgba(8, 14, 26, 0.85);
     backdrop-filter: blur(14px);
@@ -1184,11 +1257,11 @@ h1, h2, h3, h4 {
     color: #E2E8F0;
 }
 
-/* BUTTONS */
+/* Buttons */
 div.stButton > button {
     background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
     color: #FFFFFF !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
     border-radius: 8px !important;
     font-family: var(--font-mono) !important;
     font-size: 0.84rem !important;
@@ -1315,7 +1388,7 @@ if "00 // Gateway & Landing" in st.session_state["selected_screen"]:
         unsafe_allow_html=True,
     )
 
-    # Fast-Track Action Gateway
+    # Action Gateway
     c_btn1, c_btn2, c_btn3 = st.columns(3)
     with c_btn1:
         if st.button(
@@ -1536,7 +1609,6 @@ elif "02 // Ingestion & Source" in st.session_state["selected_screen"]:
         b_c1, b_c2 = st.columns(2)
         with b_c1:
             if st.button("Run System Extraction", **get_stretch_kw(st.button)):
-                # Heuristic deterministic extraction
                 new_nodes, new_edges = load_renewal_demo()[1:]
                 new_graph = TraceabilityGraph()
                 for n in new_nodes:
@@ -1797,6 +1869,32 @@ elif "04 // Requirements Ledger" in st.session_state["selected_screen"]:
                         r.id, ValidationStatus.FLAGGED_AMBIGUOUS
                     )
                     st.rerun()
+
+    with st.expander("＋ Add New Structured Requirement"):
+        with st.form("add_req_form"):
+            new_title = st.text_input("Requirement Title")
+            new_desc = st.text_area("Requirement Description")
+            new_type = st.selectbox("Type", [t.value for t in RequirementType])
+            new_priority = st.selectbox("Priority", [p.value for p in Priority])
+            new_ac = st.text_input(
+                "Acceptance Criteria (Given-When-Then format)"
+            )
+            submitted = st.form_submit_button("Add to Model")
+            if submitted and new_title and new_desc:
+                new_id = f"REQ-{len(reqs)+1:03d}"
+                created_req = Requirement(
+                    id=new_id,
+                    title=new_title,
+                    description=new_desc,
+                    req_type=RequirementType[new_type],
+                    priority=Priority[new_priority],
+                    acceptance_criteria=[new_ac] if new_ac else [],
+                    epistemic_status=EpistemicStatus.INTERPRETATION,
+                    validation_status=ValidationStatus.VALIDATED_BY_HUMAN,
+                )
+                graph.add_node(created_req)
+                st.success(f"Added {new_id} to traceability model.")
+                st.rerun()
 
 # ------------------------------------------------------------------------------
 # 05 // WORKFLOWS & SEQUENCES
