@@ -718,11 +718,9 @@ class EstimationEngine:
         requirements: List[Requirement],
         components: List[SystemComponent],
     ) -> Dict[str, Any]:
-        size_map = {"S": 2, "M": 5, "L": 8, "XL": 13}
         total_points = 0
 
         for r in requirements:
-            # Deterministic story point assignment based on AC and dependencies
             pts = 3 + len(r.acceptance_criteria) * 2
             if r.priority == Priority.CRITICAL:
                 pts += 3
@@ -737,10 +735,8 @@ class EstimationEngine:
             r.story_points = pts
             total_points += pts
 
-        sprints = max(1, round(total_points / 22))  # Assuming 22 pts/sprint
+        sprints = max(1, round(total_points / 22))
         weeks = sprints * 2
-
-        # Infrastructure monthly estimate
         infra_total = sum(c.monthly_infra_cost for c in components) or 600
 
         return {
@@ -1333,7 +1329,7 @@ Sales leadership insists on an 'AI-powered real-time churn prediction engine' th
 
 
 # ==============================================================================
-# 7. HIGH-CONTRAST COSMIC DESIGN SYSTEM & PROTECTED ICONS
+# 7. HIGH-CONTRAST COSMIC DESIGN SYSTEM & READABILITY FIXES
 # ==============================================================================
 
 MODERN_CSS = """
@@ -1365,6 +1361,97 @@ MODERN_CSS = """
     background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 30px 30px !important;
     color: var(--text-primary) !important;
     font-family: var(--font-sans) !important;
+}
+
+/* ==========================================================================
+   FIX FOR SCREENSHOT 1: Mermaid Sequence Diagram Dark Theme High-Contrast
+   ========================================================================== */
+.mermaid text, 
+svg[id^="mermaid-"] text,
+.mermaid tspan {
+    fill: #F8FAFC !important;
+    color: #F8FAFC !important;
+    font-family: var(--font-mono) !important;
+    font-size: 12px !important;
+}
+.mermaid .messageText,
+svg[id^="mermaid-"] .messageText {
+    fill: #22D3EE !important;
+    stroke: none !important;
+    font-weight: 600 !important;
+}
+.mermaid .actor,
+svg[id^="mermaid-"] .actor {
+    fill: #111A2E !important;
+    stroke: #06B6D4 !important;
+    stroke-width: 1.5px !important;
+}
+.mermaid .actor-box,
+svg[id^="mermaid-"] .actor-box {
+    fill: #111A2E !important;
+}
+.mermaid line,
+svg[id^="mermaid-"] line {
+    stroke: #38BDF8 !important;
+    stroke-width: 1.5px !important;
+}
+.mermaid .sequenceNumber,
+svg[id^="mermaid-"] .sequenceNumber {
+    fill: #060913 !important;
+    font-weight: 800 !important;
+}
+
+/* ==========================================================================
+   FIX FOR SCREENSHOT 2: Selectbox Container, Value & Label Styling
+   ========================================================================== */
+/* Selectbox Label: High-contrast, clean uppercase */
+div[data-testid="stSelectbox"] label p {
+    color: #F8FAFC !important;
+    font-family: var(--font-mono) !important;
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    opacity: 1 !important;
+}
+
+/* Selectbox input box: Replaces the harsh white block with dark glass */
+div[data-baseweb="select"] > div {
+    background: rgba(17, 26, 46, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border-radius: 8px !important;
+    color: #FFFFFF !important;
+}
+div[data-baseweb="select"] > div:hover {
+    border-color: #06B6D4 !important;
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.25) !important;
+}
+div[data-baseweb="select"] span {
+    color: #FFFFFF !important;
+    font-family: var(--font-sans) !important;
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+}
+div[data-baseweb="select"] svg {
+    fill: #F8FAFC !important;
+    color: #F8FAFC !important;
+}
+
+/* Dropdown popover menu styling */
+div[data-baseweb="popover"],
+div[data-baseweb="menu"] {
+    background: #0E172A !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-radius: 8px !important;
+}
+div[data-baseweb="menu"] li {
+    color: #F8FAFC !important;
+    font-family: var(--font-sans) !important;
+    font-size: 0.85rem !important;
+}
+div[data-baseweb="menu"] li:hover {
+    background: rgba(6, 182, 212, 0.15) !important;
+    color: #22D3EE !important;
 }
 
 header[data-testid="stHeader"] { background: transparent !important; }
@@ -1969,7 +2056,12 @@ elif "05 // Workflows & Sequences" in st.session_state["selected_screen"]:
         [n for n in nodes if n.node_type == NodeType.WORKFLOW_STEP],
         key=lambda s: s.sequence_index,
     )
-    mermaid = ["sequenceDiagram", "    autonumber"]
+    # Inject Mermaid theme initialization directive so text renders with high contrast
+    mermaid = [
+        "%%{init: {'theme': 'dark', 'themeVariables': {'darkMode': true, 'primaryColor': '#111A2E', 'primaryTextColor': '#F8FAFC', 'primaryBorderColor': '#06B6D4', 'lineColor': '#38BDF8', 'textColor': '#F8FAFC', 'messageTextColor': '#22D3EE'}}}%%",
+        "sequenceDiagram",
+        "    autonumber",
+    ]
     for s in steps:
         mermaid.append(f"    User->>System: {s.title}")
     st.markdown("```mermaid\n" + "\n".join(mermaid) + "\n```")
@@ -2036,7 +2128,7 @@ elif (
 ):
     st.markdown("## Security, Privacy & Compliance Exposure Heatmap")
     st.caption(
-        "Cross-reference data stores with protocols, retention boundaries, and regulatory compliance standards (GDPR / SOC 2 Type II)."
+        "Cross-reference data stores with protocols, retention boundaries, and regulatory standards (GDPR / SOC 2 Type II)."
     )
 
     datas = [
@@ -2111,7 +2203,7 @@ elif (
 elif "11 // Sprint Sizing & Estimation" in st.session_state["selected_screen"]:
     st.markdown("## Sprint Velocity, Effort Sizing & Cloud Cost Estimation")
     st.caption(
-        "Deterministic story point calculations, T-shirt sizing, and infrastructure budgeting based on architectural dependencies."
+        "Deterministic story point calculations, T-shirt sizing, and infrastructure budgeting."
     )
 
     reqs = [
@@ -2323,4 +2415,4 @@ elif "14 // Methodology" in st.session_state["selected_screen"]:
     2. **Deterministic Governance:** Readiness scores (0-100%), conflict detection, and ambiguity flags are computed by deterministic Python algorithms and rule matrices—never by black-box LLM estimations.
     3. **Bidirectional Traceability:** Every system component, data dependency, and acceptance test maintains a verifiable relational link back to its originating stakeholder rationale.
     """
-    ) 
+    )
