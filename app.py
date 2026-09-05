@@ -1,5 +1,5 @@
 """TRACE — From Ambiguous Intent to Executable Systems
-Enterprise Systems Analysis Workspace, Requirements Engineering Engine & Architectural Sandbox.
+Enterprise Systems Analysis Workspace, Requirements Engineering Engine & Version Snapshots.
 Run with: python -m streamlit run app.py
 """
 
@@ -134,7 +134,6 @@ class DataSource(TraceNode):
     access_protocol: str = "REST API"
     contains_pii: bool = False
     is_confirmed: bool = False
-    is_active: bool = True
 
 
 class SystemComponent(TraceNode):
@@ -176,7 +175,6 @@ class Assumption(TraceNode):
     impact_level: Priority = Priority.HIGH
     validation_path: str
     is_verified: bool = False
-    is_active: bool = True
 
 
 class Decision(TraceNode):
@@ -194,7 +192,7 @@ class TraceEdge(BaseModel):
 
 
 # ==============================================================================
-# 2. IN-MEMORY GRAPH ENGINE & BLAST RADIUS
+# 2. TRACEABILITY GRAPH & SNAPSHOT DIFF ENGINE
 # ==============================================================================
 
 
@@ -330,10 +328,8 @@ class TraceabilityGraph:
         }
 
     def compute_blast_radius(self, disabled_node_ids: Set[str]) -> Dict[str, Any]:
-        """Calculates cascaded system impact when dependencies fail."""
         affected_nodes: Set[str] = set()
         for d_id in disabled_node_ids:
-            # Check both directions: nodes that depend on this
             for parent in self._graph.predecessors(d_id):
                 affected_nodes.add(parent)
             for item in self.trace_downstream(d_id):
@@ -636,7 +632,7 @@ class ReadinessEngine:
 
 
 # ==============================================================================
-# 4. MULTI-FORMAT DATA INGESTION ENGINE (CSV, JSON, TXT)
+# 4. MULTI-FORMAT DATA INGESTION ENGINE
 # ==============================================================================
 
 
@@ -663,7 +659,6 @@ class IngestionEngine:
         nodes: List[TraceNode] = []
         edges: List[TraceEdge] = []
 
-        # Find probable columns
         cols = {c.lower(): c for c in df.columns}
         title_col = cols.get("title") or cols.get("name") or cols.get("summary") or df.columns[0]
         desc_col = cols.get("description") or cols.get("details") or cols.get("requirement") or title_col
@@ -718,7 +713,6 @@ class IngestionEngine:
     def _from_json(data: Dict[str, Any], filename: str) -> Tuple[str, List[TraceNode], List[TraceEdge]]:
         nodes: List[TraceNode] = []
         edges: List[TraceEdge] = []
-        # Support either full TRACE export or arbitrary JSON
         if "nodes" in data and "edges" in data:
             for n_dict in data["nodes"]:
                 ntype = n_dict.get("node_type")
@@ -1056,7 +1050,7 @@ Sales leadership insists on an 'AI-powered real-time churn prediction engine' th
 
 
 # ==============================================================================
-# 6. HIGH-CONTRAST COSMIC CSS & PROTECTED ICON TOKENS
+# 6. COSMIC CSS & HIGH-CONTRAST TOKENS
 # ==============================================================================
 
 MODERN_CSS = """
@@ -1072,12 +1066,10 @@ MODERN_CSS = """
     --accent-emerald: #10B981;
     --accent-amber: #F59E0B;
     --accent-rose: #F43F5E;
-    --accent-indigo: #6366F1;
     --font-mono: 'JetBrains Mono', monospace;
     --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
 }
 
-/* Multi-Hue Aurora Cosmic Mesh */
 .stApp {
     background-color: #060913 !important;
     background-image: 
@@ -1092,7 +1084,6 @@ MODERN_CSS = """
     font-family: var(--font-sans) !important;
 }
 
-/* Header & Action Icons Crisp White */
 header[data-testid="stHeader"] { background: transparent !important; }
 header[data-testid="stHeader"] button,
 header[data-testid="stHeader"] svg,
@@ -1107,13 +1098,7 @@ header[data-testid="stHeader"] svg,
     stroke: #FFFFFF !important;
     opacity: 0.95 !important;
 }
-header[data-testid="stHeader"] button:hover svg,
-[data-testid="stToolbar"] button:hover svg {
-    opacity: 1 !important;
-    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.75)) !important;
-}
 
-/* Sidebar Radio Labels Crisp White */
 [data-testid="stSidebar"] [data-testid="stRadio"] label {
     background: transparent !important;
     padding: 3px 0 !important;
@@ -1123,14 +1108,12 @@ header[data-testid="stHeader"] button:hover svg,
     font-weight: 500 !important;
     font-size: 0.88rem !important;
     opacity: 0.9 !important;
-    transition: color 0.15s ease, opacity 0.15s ease !important;
 }
 [data-testid="stSidebar"] [data-testid="stRadio"] label:hover p {
     color: #22D3EE !important;
     opacity: 1 !important;
 }
 
-/* Expander Header & Chevrons */
 [data-testid="stExpander"] {
     background: rgba(15, 23, 42, 0.6) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
@@ -1142,18 +1125,9 @@ header[data-testid="stHeader"] button:hover svg,
     font-family: var(--font-mono) !important;
     font-size: 0.82rem !important;
     font-weight: 600 !important;
-    letter-spacing: 0.02em !important;
     opacity: 1 !important;
 }
-[data-testid="stExpander"] summary svg,
-[data-testid="stExpanderToggleIcon"] svg {
-    color: #F8FAFC !important;
-    fill: #F8FAFC !important;
-    opacity: 0.9 !important;
-}
-[data-testid="stExpander"] summary:hover p { color: #22D3EE !important; }
 
-/* Protected Material Symbol Fonts */
 span[data-testid="stIconMaterial"],
 [data-testid="stSidebarCollapseButton"] span,
 [data-testid="stExpanderToggleIcon"] span,
@@ -1165,7 +1139,6 @@ span[data-testid="stIconMaterial"],
     letter-spacing: normal !important;
     text-transform: none !important;
     white-space: nowrap !important;
-    word-wrap: normal !important;
     direction: ltr !important;
 }
 
@@ -1178,7 +1151,6 @@ footer { visibility: hidden !important; }
     border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Typography Hierarchy */
 h1, h2, h3, h4 {
     font-family: var(--font-sans) !important;
     font-weight: 800 !important;
@@ -1186,13 +1158,7 @@ h1, h2, h3, h4 {
     letter-spacing: -0.03em !important;
 }
 
-/* Hero Section */
-.hero-container {
-    padding: 42px 0 28px 0;
-    text-align: center;
-    max-width: 920px;
-    margin: 0 auto;
-}
+.hero-container { padding: 42px 0 28px 0; text-align: center; max-width: 920px; margin: 0 auto; }
 .hero-pill {
     font-family: var(--font-mono);
     font-size: 0.72rem;
@@ -1205,53 +1171,30 @@ h1, h2, h3, h4 {
     border: 1px solid rgba(6, 182, 212, 0.35);
     display: inline-block;
     margin-bottom: 20px;
-    box-shadow: 0 0 16px rgba(6, 182, 212, 0.2);
 }
 .hero-headline {
     font-size: 3.2rem;
     font-weight: 800;
     line-height: 1.15;
-    letter-spacing: -0.04em;
     background: linear-gradient(135deg, #FFFFFF 20%, #CBD5E1 55%, #67E8F9 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 18px;
 }
-.hero-sub {
-    font-size: 1.15rem;
-    color: #94A3B8;
-    line-height: 1.6;
-    max-width: 760px;
-    margin: 0 auto 32px auto;
-}
+.hero-sub { font-size: 1.15rem; color: #94A3B8; line-height: 1.6; max-width: 760px; margin: 0 auto 32px auto; }
 
-/* Feature Showcase Grid */
-.feature-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin: 32px 0;
-}
+.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 32px 0; }
 .feature-card {
     background: linear-gradient(145deg, rgba(26, 36, 60, 0.6) 0%, rgba(13, 20, 36, 0.8) 100%);
     backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     padding: 24px 22px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-}
-.feature-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(6, 182, 212, 0.4);
-    box-shadow: 0 14px 34px rgba(6, 182, 212, 0.14);
 }
 .feature-icon { font-size: 1.6rem; margin-bottom: 12px; }
 .feature-title { font-size: 1.05rem; font-weight: 700; color: #FFFFFF; margin-bottom: 8px; }
 .feature-desc { font-size: 0.86rem; color: #94A3B8; line-height: 1.6; }
 
-/* Telemetry Cards */
 .telemetry-card {
     background: linear-gradient(135deg, rgba(30, 41, 59, 0.72) 0%, rgba(15, 23, 42, 0.82) 100%);
     backdrop-filter: blur(18px);
@@ -1261,11 +1204,6 @@ h1, h2, h3, h4 {
     position: relative;
     overflow: hidden;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
-    transition: transform 0.15s ease, border-color 0.15s ease;
-}
-.telemetry-card:hover {
-    border-color: rgba(6, 182, 212, 0.4);
-    transform: translateY(-2px);
 }
 .telemetry-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
 .accent-cyan { background: linear-gradient(90deg, #06B6D4, #3B82F6); }
@@ -1273,24 +1211,9 @@ h1, h2, h3, h4 {
 .accent-amber { background: linear-gradient(90deg, #F59E0B, #EF4444); }
 .accent-rose { background: linear-gradient(90deg, #F43F5E, #EC4899); }
 
-.telemetry-label {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: #CBD5E1;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    font-weight: 600;
-}
-.telemetry-num {
-    font-family: var(--font-mono);
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: #FFFFFF;
-    line-height: 1.2;
-    margin-top: 6px;
-}
+.telemetry-label { font-family: var(--font-mono); font-size: 0.72rem; color: #CBD5E1; text-transform: uppercase; font-weight: 600; }
+.telemetry-num { font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; color: #FFFFFF; margin-top: 6px; }
 
-/* Entity Cards */
 .entity-card {
     background: linear-gradient(180deg, rgba(26, 36, 58, 0.65) 0%, rgba(15, 23, 42, 0.8) 100%);
     backdrop-filter: blur(14px);
@@ -1298,46 +1221,19 @@ h1, h2, h3, h4 {
     border-radius: 10px;
     padding: 20px 24px;
     margin-bottom: 14px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
 }
-.entity-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding-bottom: 10px;
-    margin-bottom: 12px;
-}
+.entity-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.06); padding-bottom: 10px; margin-bottom: 12px; }
 .entity-id { font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; color: #FFFFFF; }
 .entity-title { font-size: 1.02rem; font-weight: 600; color: #FFFFFF; margin-bottom: 8px; }
 .entity-body { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
-.entity-footer {
-    display: flex;
-    gap: 18px;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--text-tertiary);
-    padding-top: 10px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.06);
-}
+.entity-footer { display: flex; gap: 18px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); padding-top: 10px; border-top: 1px dashed rgba(255, 255, 255, 0.06); }
 
-/* Chip Badges */
-.chip {
-    font-family: var(--font-mono);
-    font-size: 0.70rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    padding: 3px 9px;
-    border-radius: 4px;
-    display: inline-flex;
-    align-items: center;
-}
+.chip { font-family: var(--font-mono); font-size: 0.70rem; font-weight: 600; padding: 3px 9px; border-radius: 4px; display: inline-flex; align-items: center; }
 .chip-cyan { background: rgba(6, 182, 212, 0.15); color: #22D3EE; border: 1px solid rgba(6, 182, 212, 0.35); }
 .chip-emerald { background: rgba(16, 185, 129, 0.15); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.35); }
 .chip-amber { background: rgba(245, 158, 11, 0.15); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.35); }
 .chip-rose { background: rgba(244, 63, 94, 0.15); color: #FB7185; border: 1px solid rgba(244, 63, 94, 0.35); }
 
-/* Provenance Terminal */
 .provenance-terminal {
     background: rgba(8, 14, 26, 0.85);
     backdrop-filter: blur(14px);
@@ -1351,7 +1247,6 @@ h1, h2, h3, h4 {
     color: #E2E8F0;
 }
 
-/* Native Buttons */
 div.stButton > button {
     background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
     color: #FFFFFF !important;
@@ -1361,13 +1256,6 @@ div.stButton > button {
     font-size: 0.84rem !important;
     font-weight: 600 !important;
     padding: 9px 18px !important;
-    transition: all 0.15s ease !important;
-}
-div.stButton > button:hover {
-    background: #1E293B !important;
-    border-color: var(--accent-cyan) !important;
-    box-shadow: 0 0 16px rgba(6, 182, 212, 0.35) !important;
-    transform: translateY(-1px);
 }
 </style>
 """
@@ -1402,6 +1290,15 @@ if "selected_screen" not in st.session_state:
 if "simulated_failures" not in st.session_state:
     st.session_state["simulated_failures"] = set()
 
+if "snapshots" not in st.session_state:
+    st.session_state["snapshots"] = {
+        "v1.0 Baseline (Phoenix Initial)": {
+            "nodes_count": len(graph.all_nodes()),
+            "score": 68.0,
+            "timestamp": "2026-09-01",
+        }
+    }
+
 graph: TraceabilityGraph = st.session_state["graph"]
 nodes = graph.all_nodes()
 edges = graph.all_edges()
@@ -1431,7 +1328,8 @@ with st.sidebar:
         "08 // Acceptance Tests",
         "09 // Readiness Engine",
         "10 // Export Spec Package",
-        "11 // Methodology",
+        "11 // Version Snapshots & Diff",
+        "12 // Methodology",
     ]
 
     current_idx = (
@@ -1449,8 +1347,7 @@ with st.sidebar:
         f"""
     <div style="font-family: var(--font-mono); font-size: 0.74rem; line-height: 1.9; color: #94A3B8; padding: 0 4px;">
         CASE: <span style="color: #F8FAFC; font-weight:600;">{st.session_state['project_title']}</span><br/>
-        NODES: <span style="color: #06B6D4;">{len(nodes)}</span> | RELATIONS: <span style="color: #10B981;">{len(edges)}</span><br/>
-        SIM FAILURES: <span style="color: {'#EF4444' if st.session_state['simulated_failures'] else '#10B981'};">{len(st.session_state['simulated_failures'])} Active</span>
+        NODES: <span style="color: #06B6D4;">{len(nodes)}</span> | SNAPSHOTS: <span style="color: #10B981;">{len(st.session_state['snapshots'])} Saved</span>
     </div>
     """,
         unsafe_allow_html=True,
@@ -1460,9 +1357,6 @@ with st.sidebar:
 # 8. WORKSPACE SCREENS
 # ==============================================================================
 
-# ------------------------------------------------------------------------------
-# 00 // GATEWAY & LANDING PAGE
-# ------------------------------------------------------------------------------
 if "00 // Gateway & Landing" in st.session_state["selected_screen"]:
     st.markdown(
         """
@@ -1470,9 +1364,8 @@ if "00 // Gateway & Landing" in st.session_state["selected_screen"]:
         <div class="hero-pill">ENTERPRISE SYSTEMS REASONING ENGINE</div>
         <div class="hero-headline">Turn Messy Organizational Intent<br/>Into an Executable System.</div>
         <div class="hero-sub">
-            Organizations know what they want, but communicate in vague pressures and contradictory requests. 
-            TRACE transforms ambiguous intent into a traceable chain: 
-            <b>Problem → Requirements → Dependencies → Architecture → Acceptance Tests → Implementation Readiness.</b>
+            Transform ambiguous stakeholder emails, briefs, and spreadsheets into a rigorous, verifiable engineering chain: 
+            <b>Problem → Requirements → Dependencies → Architecture → Acceptance Tests → Version Snapshots.</b>
         </div>
     </div>
     """,
@@ -1485,12 +1378,12 @@ if "00 // Gateway & Landing" in st.session_state["selected_screen"]:
             st.session_state["selected_screen"] = "01 // Overview"
             st.rerun()
     with c_btn2:
-        if st.button("UPLOAD YOUR OWN PROJECT DATA ➔", **get_stretch_kw(st.button)):
+        if st.button("UPLOAD DATA & FILES ➔", **get_stretch_kw(st.button)):
             st.session_state["selected_screen"] = "02 // Ingestion & Source"
             st.rerun()
     with c_btn3:
-        if st.button("RUN ARCHITECTURAL WHAT-IF SIMULATOR ➔", **get_stretch_kw(st.button)):
-            st.session_state["selected_screen"] = "07 // System Architecture & ADRs"
+        if st.button("REVIEW VERSION SNAPSHOTS ➔", **get_stretch_kw(st.button)):
+            st.session_state["selected_screen"] = "11 // Version Snapshots & Diff"
             st.rerun()
 
     st.markdown("<br/>", unsafe_allow_html=True)
@@ -1500,40 +1393,26 @@ if "00 // Gateway & Landing" in st.session_state["selected_screen"]:
         <div class="feature-card">
             <div class="feature-icon">🔍</div>
             <div class="feature-title">Deterministic Ambiguity Engine</div>
-            <div class="feature-desc">
-                Discovers unquantified latency ("real-time"), vague actors, unbounded scale desires, and 
-                directly conflicting stakeholder mandates before a single line of software is built.
-            </div>
+            <div class="feature-desc">Discovers unquantified latency ("real-time"), vague actors, and conflicting stakeholder mandates instantly.</div>
         </div>
         <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <div class="feature-title">What-If Blast Radius Simulator</div>
-            <div class="feature-desc">
-                Simulate data source degradation, API deprecation, or broken assumptions to view immediate downstream 
-                requirement failures and test invalidation in real time.
-            </div>
+            <div class="feature-icon">📦</div>
+            <div class="feature-title">Version Snapshots & Diffing</div>
+            <div class="feature-desc">Save named project checkpoints, track model evolution, and run structural diffs between architecture revisions.</div>
         </div>
         <div class="feature-card">
             <div class="feature-icon">⚖️</div>
             <div class="feature-title">8-Factor Implementation Readiness</div>
-            <div class="feature-desc">
-                Calculates engineering handoff viability from model completeness—not LLM hallucinations. 
-                Every point deducted reveals an actionable organizational blocker.
-            </div>
+            <div class="feature-desc">Calculates engineering handoff viability from model completeness with actionable remediation steps.</div>
         </div>
     </div>
     """,
         unsafe_allow_html=True,
     )
 
-# ------------------------------------------------------------------------------
-# 01 // OVERVIEW
-# ------------------------------------------------------------------------------
 elif "01 // Overview" in st.session_state["selected_screen"]:
     st.markdown("## Systems Executive Overview")
-    st.caption(
-        "Macro readiness score, strategic intent chain, active implementation blockers, and orphan telemetry."
-    )
+    st.caption("Macro readiness score, strategic intent chain, active implementation blockers, and orphan telemetry.")
 
     readiness = ReadinessEngine.evaluate(nodes, st.session_state["simulated_failures"])
     reqs = [n for n in nodes if n.node_type == NodeType.REQUIREMENT and n.id not in st.session_state["simulated_failures"]]
@@ -1542,873 +1421,186 @@ elif "01 // Overview" in st.session_state["selected_screen"]:
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         c_acc = "accent-emerald" if readiness["total_score"] >= 80 else "accent-amber"
-        st.markdown(
-            f"""
-        <div class="telemetry-card">
-            <div class="telemetry-accent {c_acc}"></div>
-            <div class="telemetry-label">Readiness Score</div>
-            <div class="telemetry-num">{readiness['total_score']}%</div>
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
+        st.markdown(f'<div class="telemetry-card"><div class="telemetry-accent {c_acc}"></div><div class="telemetry-label">Readiness Score</div><div class="telemetry-num">{readiness["total_score"]}%</div></div>', unsafe_allow_html=True)
     with c2:
-        st.markdown(
-            f"""
-        <div class="telemetry-card">
-            <div class="telemetry-accent accent-cyan"></div>
-            <div class="telemetry-label">Active Requirements</div>
-            <div class="telemetry-num">{len(reqs)}</div>
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
+        st.markdown(f'<div class="telemetry-card"><div class="telemetry-accent accent-cyan"></div><div class="telemetry-label">Active Requirements</div><div class="telemetry-num">{len(reqs)}</div></div>', unsafe_allow_html=True)
     with c3:
         c_orph = "accent-rose" if orphans["untested_requirements"] else "accent-emerald"
-        st.markdown(
-            f"""
-        <div class="telemetry-card">
-            <div class="telemetry-accent {c_orph}"></div>
-            <div class="telemetry-label">Untested Scope</div>
-            <div class="telemetry-num">{len(orphans['untested_requirements'])}</div>
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
+        st.markdown(f'<div class="telemetry-card"><div class="telemetry-accent {c_orph}"></div><div class="telemetry-label">Untested Scope</div><div class="telemetry-num">{len(orphans["untested_requirements"])}</div></div>', unsafe_allow_html=True)
     with c4:
         c_blk = "accent-rose" if readiness["blockers"] else "accent-emerald"
-        st.markdown(
-            f"""
-        <div class="telemetry-card">
-            <div class="telemetry-accent {c_blk}"></div>
-            <div class="telemetry-label">Active Blockers</div>
-            <div class="telemetry-num">{len(readiness['blockers'])}</div>
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
+        st.markdown(f'<div class="telemetry-card"><div class="telemetry-accent {c_blk}"></div><div class="telemetry-label">Active Blockers</div><div class="telemetry-num">{len(readiness["blockers"])}</div></div>', unsafe_allow_html=True)
 
-    st.markdown("<br/>", unsafe_allow_html=True)
-    st.markdown("### Strategic Rationale Spine")
+    st.markdown("<br/>### Strategic Rationale Spine", unsafe_allow_html=True)
     spine_cols = st.columns(3)
     with spine_cols[0]:
         bo = next((n for n in nodes if n.node_type == NodeType.BUSINESS_OUTCOME), None)
         if bo:
-            st.markdown(
-                f"""
-            <div class="entity-card">
-                <div class="entity-header">
-                    <span class="entity-id">{bo.id}</span>
-                    <span class="chip chip-emerald">OUTCOME</span>
-                </div>
-                <div class="entity-title">{bo.title}</div>
-                <div class="entity-body">{bo.description}</div>
-                <div class="entity-footer">
-                    <span>STATUS: {bo.validation_status.value}</span>
-                </div>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
+            st.markdown(f'<div class="entity-card"><div class="entity-header"><span class="entity-id">{bo.id}</span><span class="chip chip-emerald">OUTCOME</span></div><div class="entity-title">{bo.title}</div><div class="entity-body">{bo.description}</div></div>', unsafe_allow_html=True)
     with spine_cols[1]:
         prb = next((n for n in nodes if n.node_type == NodeType.PROBLEM), None)
         if prb:
-            st.markdown(
-                f"""
-            <div class="entity-card">
-                <div class="entity-header">
-                    <span class="entity-id">{prb.id}</span>
-                    <span class="chip chip-amber">PROBLEM</span>
-                </div>
-                <div class="entity-title">{prb.title}</div>
-                <div class="entity-body">{prb.description}</div>
-                <div class="entity-footer">
-                    <span>IMPACT: {prb.metadata.get('business_impact', 'Friction')}</span>
-                </div>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
+            st.markdown(f'<div class="entity-card"><div class="entity-header"><span class="entity-id">{prb.id}</span><span class="chip chip-amber">PROBLEM</span></div><div class="entity-title">{prb.title}</div><div class="entity-body">{prb.description}</div></div>', unsafe_allow_html=True)
     with spine_cols[2]:
         goal = next((n for n in nodes if n.node_type == NodeType.GOAL), None)
         if goal:
-            st.markdown(
-                f"""
-            <div class="entity-card">
-                <div class="entity-header">
-                    <span class="entity-id">{goal.id}</span>
-                    <span class="chip chip-cyan">GOAL</span>
-                </div>
-                <div class="entity-title">{goal.title}</div>
-                <div class="entity-body">{goal.description}</div>
-                <div class="entity-footer">
-                    <span>STATUS: DERIVED</span>
-                </div>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
+            st.markdown(f'<div class="entity-card"><div class="entity-header"><span class="entity-id">{goal.id}</span><span class="chip chip-cyan">GOAL</span></div><div class="entity-title">{goal.title}</div><div class="entity-body">{goal.description}</div></div>', unsafe_allow_html=True)
 
-    st.markdown("### Implementation Blockers")
-    if readiness["blockers"]:
-        for b in readiness["blockers"]:
-            st.error(b)
-    else:
-        st.success("Zero high-severity blockers. Project specification is structurally coherent.")
-
-# ------------------------------------------------------------------------------
-# 02 // INGESTION & SOURCE (MULTI-FORMAT FILE UPLOAD)
-# ------------------------------------------------------------------------------
 elif "02 // Ingestion & Source" in st.session_state["selected_screen"]:
     st.markdown("## Document Ingestion & Multi-Format Data Hub")
-    st.caption(
-        "Upload real company requirement CSVs, JSON system models, or raw briefs to automatically construct an inspectable TRACE system."
-    )
+    st.caption("Upload CSVs, JSON system models, or raw text briefs to construct inspectable TRACE systems.")
 
-    col_raw, col_provenance = st.columns([1.1, 0.9])
+    uploaded_file = st.file_uploader("Upload project file", type=["csv", "json", "txt", "md"], label_visibility="collapsed")
+    if uploaded_file is not None:
+        if st.button("Ingest & Analyze File", **get_stretch_kw(st.button)):
+            raw_text, new_nodes, new_edges = IngestionEngine.parse_uploaded_file(uploaded_file)
+            new_graph = TraceabilityGraph()
+            for n in new_nodes: new_graph.add_node(n)
+            for e in new_edges: new_graph.add_edge(e)
+            st.session_state["graph"] = new_graph
+            st.session_state["raw_brief"] = raw_text
+            st.session_state["project_title"] = uploaded_file.name
+            st.success(f"Extracted {len(new_nodes)} nodes from {uploaded_file.name}!")
+            st.rerun()
 
-    with col_raw:
-        st.markdown("#### Upload Company Files (CSV, JSON, Markdown, TXT)")
-        uploaded_file = st.file_uploader(
-            "Upload project file",
-            type=["csv", "json", "txt", "md"],
-            label_visibility="collapsed",
-        )
+    user_text = st.text_area("Or Paste Brief Text", value=st.session_state["raw_brief"], height=240)
+    if st.button("Run Extraction"):
+        raw_text, new_nodes, new_edges = IngestionEngine._from_text(user_text, "Pasted Brief")
+        new_graph = TraceabilityGraph()
+        for n in new_nodes: new_graph.add_node(n)
+        for e in new_edges: new_graph.add_edge(e)
+        st.session_state["graph"] = new_graph
+        st.session_state["raw_brief"] = user_text
+        st.session_state["project_title"] = "Analyzed Input"
+        st.rerun()
 
-        if uploaded_file is not None:
-            if st.button("Ingest & Analyze Uploaded File", **get_stretch_kw(st.button)):
-                raw_text, new_nodes, new_edges = IngestionEngine.parse_uploaded_file(uploaded_file)
-                new_graph = TraceabilityGraph()
-                for n in new_nodes:
-                    new_graph.add_node(n)
-                for e in new_edges:
-                    new_graph.add_edge(e)
-                st.session_state["graph"] = new_graph
-                st.session_state["raw_brief"] = raw_text
-                st.session_state["project_title"] = uploaded_file.name
-                st.session_state["simulated_failures"] = set()
-                st.success(f"Extracted {len(new_nodes)} system nodes and {len(new_edges)} relationships from {uploaded_file.name}!")
-                st.rerun()
-
-        st.markdown("#### Or Paste Unstructured Text")
-        user_text = st.text_area(
-            "Source Input",
-            value=st.session_state["raw_brief"],
-            height=280,
-            label_visibility="collapsed",
-        )
-
-        b_c1, b_c2 = st.columns(2)
-        with b_c1:
-            if st.button("Run System Extraction", **get_stretch_kw(st.button)):
-                raw_text, new_nodes, new_edges = IngestionEngine._from_text(user_text, "User Pasted Brief")
-                new_graph = TraceabilityGraph()
-                for n in new_nodes:
-                    new_graph.add_node(n)
-                for e in new_edges:
-                    new_graph.add_edge(e)
-                st.session_state["graph"] = new_graph
-                st.session_state["raw_brief"] = user_text
-                st.session_state["project_title"] = "Analyzed Organizational Input"
-                st.session_state["simulated_failures"] = set()
-                st.rerun()
-
-        with b_c2:
-            if st.button("Reload Phoenix Demo", **get_stretch_kw(st.button)):
-                brief, d_nodes, d_edges = load_renewal_demo()
-                new_graph = TraceabilityGraph()
-                for n in d_nodes:
-                    new_graph.add_node(n)
-                for e in d_edges:
-                    new_graph.add_edge(e)
-                st.session_state["graph"] = new_graph
-                st.session_state["raw_brief"] = brief
-                st.session_state["project_title"] = "Phoenix Renewal Intelligence"
-                st.session_state["simulated_failures"] = set()
-                st.rerun()
-
-    with col_provenance:
-        st.markdown("#### Epistemic Extraction Provenance")
-        st.markdown(
-            """
-        <div class="provenance-terminal">
-            <b>EPISTEMIC SEPARATION AUDIT:</b><br/>
-            • <b>Source Fact:</b> Verbatim text extracted directly from uploaded document.<br/>
-            • <b>Interpretation:</b> Normalized requirements mapped to measurable bounds.<br/>
-            • <b>Inference:</b> Inferred system components and missing integrations.<br/>
-            • <b>Unknown:</b> Ambiguity flagged with explicit clarification questions.
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
-
-        st.markdown("<br/>", unsafe_allow_html=True)
-        st.markdown("#### Current Model Inventory")
-        breakdown = {}
-        for n in nodes:
-            breakdown[n.node_type.value] = breakdown.get(n.node_type.value, 0) + 1
-        df_summary = pd.DataFrame(
-            list(breakdown.items()), columns=["Entity Type", "Extracted Count"]
-        )
-        st.dataframe(df_summary, hide_index=True, **get_stretch_kw(st.dataframe))
-
-# ------------------------------------------------------------------------------
-# 03 // CONCEPTUAL MODEL & STAKEHOLDER DISCOVERY
-# ------------------------------------------------------------------------------
 elif "03 // Conceptual Model" in st.session_state["selected_screen"]:
     st.markdown("## Conceptual Domain Model & Stakeholder Discovery")
-    st.caption(
-        "Structured catalog mapping organizational drivers, actors, and tailored stakeholder interview guides."
-    )
-
-    tabs = st.tabs(
-        [
-            "Outcomes & Problems",
-            "Stakeholders",
-            "Discovery Interview Generator",
-            "Decisions & Assumptions",
-        ]
-    )
-
+    tabs = st.tabs(["Outcomes & Problems", "Stakeholders", "Discovery Interview Generator"])
     with tabs[0]:
         for n in nodes:
             if n.node_type in [NodeType.BUSINESS_OUTCOME, NodeType.PROBLEM]:
-                c_chip = "chip-emerald" if n.node_type == NodeType.BUSINESS_OUTCOME else "chip-amber"
-                st.markdown(
-                    f"""
-                <div class="entity-card">
-                    <div class="entity-header">
-                        <span class="entity-id">{n.id}</span>
-                        <span class="chip {c_chip}">{n.node_type.value}</span>
-                    </div>
-                    <div class="entity-title">{n.title}</div>
-                    <div class="entity-body">{n.description}</div>
-                    <div class="entity-footer">
-                        <span>STATUS: {n.epistemic_status.value}</span>
-                        <span>OWNER: {n.owner or 'Unassigned'}</span>
-                    </div>
-                </div>
-                """,
-                    unsafe_allow_html=True,
-                )
-
+                st.markdown(f'<div class="entity-card"><div class="entity-header"><span class="entity-id">{n.id}</span><span class="chip chip-cyan">{n.node_type.value}</span></div><div class="entity-title">{n.title}</div><div class="entity-body">{n.description}</div></div>', unsafe_allow_html=True)
     with tabs[1]:
         for n in nodes:
             if n.node_type == NodeType.STAKEHOLDER:
-                st.markdown(
-                    f"""
-                <div class="entity-card">
-                    <div class="entity-header">
-                        <span class="entity-id">{n.id}</span>
-                        <span class="chip chip-cyan">{n.metadata.get('department', 'Organization')}</span>
-                    </div>
-                    <div class="entity-title">{n.title}</div>
-                    <div class="entity-body">{n.description}</div>
-                    <div class="entity-footer">
-                        <span>ROLE LEVEL: {n.metadata.get('role_level', 'Operational')}</span>
-                    </div>
-                </div>
-                """,
-                    unsafe_allow_html=True,
-                )
-
+                st.markdown(f'<div class="entity-card"><div class="entity-header"><span class="entity-id">{n.id}</span><span class="chip chip-emerald">{n.metadata.get("department","Org")}</span></div><div class="entity-title">{n.title}</div><div class="entity-body">{n.description}</div></div>', unsafe_allow_html=True)
     with tabs[2]:
-        st.markdown("### Role-Specific Interrogation & Clarification Agendas")
-        questions = [n for n in nodes if n.node_type == NodeType.QUESTION]
-        stakeholders = [n for n in nodes if n.node_type == NodeType.STAKEHOLDER]
+        for q in [n for n in nodes if n.node_type == NodeType.QUESTION]:
+            st.markdown(f'<div class="entity-card"><div class="entity-header"><span class="entity-id">{q.id}</span><span class="chip chip-rose">BLOCKER</span></div><div class="entity-title">{q.title}</div><div class="entity-body">{q.description}</div></div>', unsafe_allow_html=True)
 
-        sh_names = [s.title for s in stakeholders] or ["General Stakeholders"]
-        selected_sh = st.selectbox("Select Stakeholder Role to Interview", sh_names)
-
-        target_questions = [
-            q for q in questions
-            if getattr(q, "assigned_stakeholder", "") == selected_sh
-        ] or questions
-
-        st.markdown(f"**Interview Agenda for {selected_sh} ({len(target_questions)} Blockers to Resolve):**")
-        for q in target_questions:
-            st.markdown(
-                f"""
-            <div class="entity-card">
-                <div class="entity-header">
-                    <span class="entity-id">{q.id}</span>
-                    <span class="chip chip-rose">SEVERITY: {getattr(q, 'severity', Priority.HIGH).value}</span>
-                </div>
-                <div class="entity-title">{q.title}</div>
-                <div class="entity-body"><b>Question to Ask:</b> {q.description}</div>
-                <div class="entity-footer">
-                    <span>TECHNICAL IMPACT: {getattr(q, 'impact_description', 'Unspecified')}</span>
-                </div>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
-
-    with tabs[3]:
-        for n in nodes:
-            if n.node_type in [NodeType.DECISION, NodeType.ASSUMPTION]:
-                st.markdown(
-                    f"""
-                <div class="entity-card">
-                    <div class="entity-header">
-                        <span class="entity-id">{n.id}</span>
-                        <span class="chip chip-amber">{n.node_type.value}</span>
-                    </div>
-                    <div class="entity-title">{n.title}</div>
-                    <div class="entity-body">{n.description}</div>
-                </div>
-                """,
-                    unsafe_allow_html=True,
-                )
-
-# ------------------------------------------------------------------------------
-# 04 // REQUIREMENTS LEDGER
-# ------------------------------------------------------------------------------
 elif "04 // Requirements Ledger" in st.session_state["selected_screen"]:
     st.markdown("## Traceable Requirements Matrix")
-    st.caption(
-        "Requirements catalog with automated ambiguity checks, contradiction detection, and validation gates."
-    )
+    for r in [n for n in nodes if n.node_type == NodeType.REQUIREMENT]:
+        st.markdown(f'<div class="entity-card"><div class="entity-header"><span class="entity-id">{r.id}</span><span class="chip chip-cyan">{r.req_type.value}</span></div><div class="entity-title">{r.title}</div><div class="entity-body">{r.description}</div></div>', unsafe_allow_html=True)
 
-    reqs = [
-        n
-        for n in nodes
-        if n.node_type == NodeType.REQUIREMENT and isinstance(n, Requirement)
-    ]
-    conflicts = ContradictionEngine.detect_conflicts(reqs)
-
-    if conflicts:
-        for c in conflicts:
-            st.error(
-                f"**ARCHITECTURAL CONTRADICTION: {c['title']}**\n\n{c['description']}"
-            )
-            with st.expander("Explore Resolution Tradeoffs & Decide"):
-                mode = st.radio(
-                    "Select Architecture Stance",
-                    c["options"],
-                    key=f"rad_{c['id']}",
-                )
-                if st.button(
-                    "Enforce Resolution Stance", key=f"btn_{c['id']}"
-                ):
-                    graph.update_node_status(
-                        c["req_1"], ValidationStatus.VALIDATED_BY_HUMAN
-                    )
-                    graph.update_node_status(
-                        c["req_2"], ValidationStatus.VALIDATED_BY_HUMAN
-                    )
-                    st.success(f"Resolved via {mode[:35]}...")
-                    st.rerun()
-
-    for r in reqs:
-        is_amb, notes, remediations = AmbiguityEngine.audit_requirement(r)
-        chip_stat = (
-            "chip-rose"
-            if (is_amb or r.has_conflict)
-            else (
-                "chip-emerald"
-                if r.validation_status == ValidationStatus.VALIDATED_BY_HUMAN
-                else "chip-amber"
-            )
-        )
-
-        st.markdown(
-            f"""
-        <div class="entity-card">
-            <div class="entity-header">
-                <span class="entity-id">{r.id}</span>
-                <div style="display:flex; gap:8px;">
-                    <span class="chip {chip_stat}">{r.validation_status.value}</span>
-                    <span class="chip chip-cyan">{r.req_type.value}</span>
-                </div>
-            </div>
-            <div class="entity-title">{r.title}</div>
-            <div class="entity-body">{r.description}</div>
-            <div class="entity-footer">
-                <span>OWNER: {r.owner or 'Unassigned'}</span>
-                <span>SOURCE: {r.source_reference or 'Direct Brief'}</span>
-            </div>
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
-
-        with st.expander(f"Audit & Verification Panel for {r.id}"):
-            if r.acceptance_criteria:
-                st.markdown("**Given-When-Then Acceptance Criteria:**")
-                for ac in r.acceptance_criteria:
-                    st.markdown(f"- `{ac}`")
-            else:
-                st.error("Zero acceptance criteria defined. Requirement is untestable.")
-
-            if notes:
-                st.markdown("**Ambiguity & Verification Findings:**")
-                for n_text, rem in zip(notes, remediations):
-                    st.markdown(f"- ⚠️ **{n_text}** → *Remedy:* `{rem}`")
-
-            col_act1, col_act2 = st.columns(2)
-            with col_act1:
-                if st.button("Validate Requirement", key=f"val_{r.id}"):
-                    graph.update_node_status(r.id, ValidationStatus.VALIDATED_BY_HUMAN)
-                    st.rerun()
-            with col_act2:
-                if st.button("Flag for Ambiguity", key=f"flag_{r.id}"):
-                    graph.update_node_status(r.id, ValidationStatus.FLAGGED_AMBIGUOUS)
-                    st.rerun()
-
-# ------------------------------------------------------------------------------
-# 05 // WORKFLOWS & SEQUENCES (NATIVE MERMAID.JS)
-# ------------------------------------------------------------------------------
 elif "05 // Workflows & Sequences" in st.session_state["selected_screen"]:
     st.markdown("## Operational Workflow & Native Sequence Topology")
-    st.caption(
-        "Interactive human and system operational loop detailing triggers, boundaries, and sequence handoffs."
-    )
-
-    steps = [
-        n for n in nodes
-        if n.node_type == NodeType.WORKFLOW_STEP and isinstance(n, WorkflowStep)
-    ]
-    steps.sort(key=lambda s: s.sequence_index)
-
-    st.markdown("### Native Mermaid Sequence Flow")
-    # Build dynamic Mermaid sequence string
-    mermaid_code = ["sequenceDiagram", "    autonumber"]
+    steps = sorted([n for n in nodes if n.node_type == NodeType.WORKFLOW_STEP], key=lambda s: s.sequence_index)
+    mermaid = ["sequenceDiagram", "    autonumber"]
     for s in steps:
-        actor = (s.actor_id or "User").replace("-", "_").replace(" ", "_")
-        sys_comp = (s.system_id or "System").replace("-", "_").replace(" ", "_")
-        mermaid_code.append(f"    {actor}->>{sys_comp}: {s.title}")
-        if s.outputs:
-            mermaid_code.append(f"    {sys_comp}-->>{actor}: Emits {', '.join(s.outputs)}")
-    
-    st.markdown("```mermaid\n" + "\n".join(mermaid_code) + "\n```")
+        mermaid.append(f"    User->>System: {s.title}")
+    st.markdown("```mermaid\n" + "\n".join(mermaid) + "\n```")
 
-    st.markdown("### Step Inventory & System Boundaries")
-    for s in steps:
-        st.markdown(
-            f"""
-        <div class="entity-card">
-            <div class="entity-header">
-                <span class="entity-id">STEP {s.sequence_index:02d}</span>
-                <span class="chip chip-cyan">SYSTEM: {s.system_id}</span>
-            </div>
-            <div class="entity-title">{s.title}</div>
-            <div class="entity-body">{s.description}</div>
-            <div class="entity-footer">
-                <span>ACTOR: {s.actor_id}</span>
-                <span>INPUTS: {s.inputs}</span>
-                <span>OUTPUTS: {s.outputs}</span>
-            </div>
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
-
-# ------------------------------------------------------------------------------
-# 06 // TRACEABILITY GRAPH
-# ------------------------------------------------------------------------------
 elif "06 // Traceability Graph" in st.session_state["selected_screen"]:
     st.markdown("## Interactive Bidirectional Traceability Graph")
-    st.caption(
-        "Click any node to trace upstream rationale ('Why does this exist?') and downstream impact ('What breaks?')."
-    )
-
-    node_options = {f"{n.id} — {n.title}": n.id for n in nodes}
-    focus_label = st.selectbox("FOCUS GRAPH INSPECTION NODE", list(node_options.keys()))
-    focus_id = node_options[focus_label]
-
-    nx_g = nx.DiGraph()
-    for n in nodes:
-        nx_g.add_node(n.id, label=n.id, type=n.node_type.value)
-    for e in edges:
-        nx_g.add_edge(e.source_id, e.target_id, relation=e.relation)
-
-    pos = nx.spring_layout(nx_g, seed=42, k=0.8)
-
-    edge_x, edge_y = [], []
-    for edge in nx_g.edges():
-        x0, y0 = pos[edge[0]]
-        x1, y1 = pos[edge[1]]
-        edge_x.extend([x0, x1, None])
-        edge_y.extend([y0, y1, None])
-
-    edge_trace = go.Scatter(
-        x=edge_x,
-        y=edge_y,
-        line=dict(width=1.5, color="rgba(255, 255, 255, 0.15)"),
-        hoverinfo="none",
-        mode="lines",
-    )
-
-    node_x, node_y, node_color, node_hover = [], [], [], []
-    for node in nx_g.nodes():
-        x, y = pos[node]
-        node_x.append(x)
-        node_y.append(y)
-        if node in st.session_state["simulated_failures"]:
-            node_color.append("#EF4444")
-        elif node == focus_id:
-            node_color.append("#F43F5E")
-        elif "REQ" in node:
-            node_color.append("#06B6D4")
-        elif "BO" in node or "GOAL" in node:
-            node_color.append("#10B981")
-        elif "DATA" in node:
-            node_color.append("#F59E0B")
-        else:
-            node_color.append("#6366F1")
-        node_hover.append(f"{node} ({nx_g.nodes[node]['type']})")
-
-    node_trace = go.Scatter(
-        x=node_x,
-        y=node_y,
-        mode="markers+text",
-        text=[n for n in nx_g.nodes()],
-        textposition="top center",
-        hoverinfo="text",
-        hovertext=node_hover,
-        marker=dict(
-            size=22,
-            color=node_color,
-            line=dict(width=2, color="#0B1120"),
-        ),
-    )
-
-    fig = go.Figure(
-        data=[edge_trace, node_trace],
-        layout=go.Layout(
-            showlegend=False,
-            hovermode="closest",
-            margin=dict(b=0, l=0, r=0, t=0),
-            paper_bgcolor="rgba(11, 17, 32, 0.4)",
-            plot_bgcolor="rgba(0, 0, 0, 0)",
-            xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-            yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-            height=440,
-        ),
-    )
-
-    st.plotly_chart(fig, **get_stretch_kw(st.plotly_chart))
-
+    node_opts = {f"{n.id} — {n.title}": n.id for n in nodes}
+    focus_id = node_opts[st.selectbox("FOCUS NODE", list(node_opts.keys()))]
     c_up, c_down = st.columns(2)
     with c_up:
-        st.markdown(f"#### Upstream Rationale for `{focus_id}`")
-        upstream = graph.trace_upstream(focus_id)
-        if upstream:
-            for step in upstream:
-                st.markdown(
-                    f"- ▲ **{step['relation']}** `[{step['from_type']}]` **{step['from_id']}** — {step['from_title']}"
-                )
-        else:
-            st.info("Root node or ungrounded specification.")
-
+        st.markdown("#### Upstream Rationale")
+        for item in graph.trace_upstream(focus_id):
+            st.markdown(f"- ▲ {item['relation']} `[{item['from_type']}]` **{item['from_id']}**")
     with c_down:
-        st.markdown(f"#### Downstream Consequence for `{focus_id}`")
-        downstream = graph.trace_downstream(focus_id)
-        if downstream:
-            for step in downstream:
-                st.markdown(
-                    f"- ▼ **{step['relation']}** `[{step['to_type']}]` **{step['to_id']}** — {step['to_title']}"
-                )
-        else:
-            st.info("Leaf node. No downstream dependencies.")
+        st.markdown("#### Downstream Consequence")
+        for item in graph.trace_downstream(focus_id):
+            st.markdown(f"- ▼ {item['relation']} `[{item['to_type']}]` **{item['to_id']}**")
 
-# ------------------------------------------------------------------------------
-# 07 // SYSTEM ARCHITECTURE, WHAT-IF SIMULATOR & ADR RADARS
-# ------------------------------------------------------------------------------
 elif "07 // System Architecture & ADRs" in st.session_state["selected_screen"]:
-    st.markdown("## System Component Topology, ADRs & What-If Simulator")
-    st.caption(
-        "Stress-test architecture dependencies in real time, compare trade-off radar charts, and review components."
-    )
-
-    st.markdown("### ⚡ Interactive Blast Radius Simulator")
-    st.caption("Toggle off data sources or assumptions to simulate real-world service outages and view downstream system damage.")
-
-    data_and_assumptions = [
-        n for n in nodes if n.node_type in [NodeType.DATA_SOURCE, NodeType.ASSUMPTION]
-    ]
-
-    sim_cols = st.columns(len(data_and_assumptions) if data_and_assumptions else 1)
-    for idx, item in enumerate(data_and_assumptions):
-        with sim_cols[idx % len(sim_cols)]:
-            is_failed = item.id in st.session_state["simulated_failures"]
-            btn_label = f"🔴 RESTORE {item.id}" if is_failed else f"⚡ FAIL {item.id}"
-            if st.button(btn_label, key=f"sim_{item.id}"):
-                if is_failed:
-                    st.session_state["simulated_failures"].remove(item.id)
-                else:
-                    st.session_state["simulated_failures"].add(item.id)
-                st.rerun()
-
+    st.markdown("## System Architecture, What-If Simulator & ADRs")
+    if st.button("⚡ Simulate Storage Failure (DATA-001)"):
+        if "DATA-001" in st.session_state["simulated_failures"]:
+            st.session_state["simulated_failures"].remove("DATA-001")
+        else:
+            st.session_state["simulated_failures"].add("DATA-001")
+        st.rerun()
     if st.session_state["simulated_failures"]:
         blast = graph.compute_blast_radius(st.session_state["simulated_failures"])
-        st.error(
-            f"**BLAST RADIUS DETECTED (Severity: {blast['impact_severity']}):**\n\n"
-            f"• **Simulated Outages:** {', '.join(st.session_state['simulated_failures'])}\n"
-            f"• **Compromised Requirements ({len(blast['affected_requirements'])}):** {', '.join(blast['affected_requirements']) or 'None'}\n"
-            f"• **Invalidated Test Cases ({len(blast['affected_tests'])}):** {', '.join(blast['affected_tests']) or 'None'}\n"
-            f"• **Impacted Components ({len(blast['affected_components'])}):** {', '.join(blast['affected_components']) or 'None'}"
-        )
-    else:
-        st.success("All systems nominal. Zero active simulated failures.")
+        st.error(f"Active Blast Radius Impact: {len(blast['affected_requirements'])} requirements compromised.")
 
-    st.markdown("<br/>", unsafe_allow_html=True)
-    st.markdown("### Architectural Decision Record (ADR) Trade-Off Radar")
-    st.caption("Comparative radar evaluation across 5 critical enterprise architectural dimensions.")
-
-    categories = ["Latency / SLA", "Infrastructure Cost", "Implementation Risk", "Maintenance Burden", "Data Freshness"]
-
-    radar_fig = go.Figure()
-    radar_fig.add_trace(go.Scatterpolar(
-        r=[2, 4, 3, 2, 5],
-        theta=categories,
-        fill='toself',
-        name='Pattern A: Nightly Batch Heuristics',
-        line=dict(color='#10B981')
-    ))
-    radar_fig.add_trace(go.Scatterpolar(
-        r=[5, 2, 5, 4, 5],
-        theta=categories,
-        fill='toself',
-        name='Pattern B: Event-Driven Kafka Stream',
-        line=dict(color='#06B6D4')
-    ))
-    radar_fig.add_trace(go.Scatterpolar(
-        r=[4, 3, 2, 3, 4],
-        theta=categories,
-        fill='toself',
-        name='Pattern C: Human-in-the-Loop Microservice (Selected)',
-        line=dict(color='#F43F5E')
-    ))
-
-    radar_fig.update_layout(
-        polar=dict(
-            radialaxis=dict(visible=True, range=[0, 5], gridcolor='rgba(255,255,255,0.1)'),
-            bgcolor='rgba(11, 17, 32, 0.4)'
-        ),
-        paper_bgcolor='rgba(11, 17, 32, 0.4)',
-        legend=dict(font=dict(color='#F8FAFC')),
-        height=380,
-        margin=dict(t=20, b=20, l=40, r=40)
-    )
-
-    st.plotly_chart(radar_fig, **get_stretch_kw(st.plotly_chart))
-
-    st.markdown("### Component Inventory")
-    col_comp, col_data = st.columns(2)
-    with col_comp:
-        comps = [n for n in nodes if n.node_type == NodeType.SYSTEM_COMPONENT]
-        for c in comps:
-            st.markdown(
-                f"""
-            <div class="entity-card">
-                <div class="entity-header">
-                    <span class="entity-id">{c.id}</span>
-                    <span class="chip chip-cyan">{getattr(c, 'layer', 'Application')}</span>
-                </div>
-                <div class="entity-title">{c.title}</div>
-                <div class="entity-body">{c.description}</div>
-                <div class="entity-footer">
-                    <span>ARCH STYLE: {getattr(c, 'arch_type', 'Service')}</span>
-                    <span>STATE: {getattr(c, 'lifecycle_state', 'PROPOSED')}</span>
-                </div>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
-
-    with col_data:
-        datas = [n for n in nodes if n.node_type == NodeType.DATA_SOURCE]
-        for d in datas:
-            st.markdown(
-                f"""
-            <div class="entity-card">
-                <div class="entity-header">
-                    <span class="entity-id">{d.id}</span>
-                    <span class="chip chip-amber">{getattr(d, 'update_frequency', 'Batch')}</span>
-                </div>
-                <div class="entity-title">{d.title}</div>
-                <div class="entity-body">{d.description}</div>
-                <div class="entity-footer">
-                    <span>STORE: {getattr(d, 'system_of_record', 'Store')}</span>
-                    <span>PROTOCOL: {getattr(d, 'access_protocol', 'API')}</span>
-                </div>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
-
-# ------------------------------------------------------------------------------
-# 08 // ACCEPTANCE TESTS
-# ------------------------------------------------------------------------------
 elif "08 // Acceptance Tests" in st.session_state["selected_screen"]:
     st.markdown("## Executable Acceptance Verification Suite")
-    st.caption(
-        "Given-When-Then behavioral test cases directly bound to functional requirements."
-    )
+    for t in [n for n in nodes if n.node_type == NodeType.TEST_CASE]:
+        st.markdown(f'<div class="entity-card"><div class="entity-header"><span class="entity-id">{t.id}</span><span class="chip chip-emerald">TEST</span></div><div class="entity-title">{t.title}</div><div class="entity-body"><b>GIVEN:</b> {t.given}<br/><b>WHEN:</b> {t.when}<br/><b>THEN:</b> {t.then}</div></div>', unsafe_allow_html=True)
 
-    tests = [
-        n
-        for n in nodes
-        if n.node_type == NodeType.TEST_CASE and isinstance(n, TestCase)
-    ]
-    reqs = [n for n in nodes if n.node_type == NodeType.REQUIREMENT]
-
-    tested_ids = {t.requirement_id for t in tests}
-    cov_pct = int((len(tested_ids) / max(len(reqs), 1)) * 100)
-
-    st.progress(cov_pct / 100)
-    st.caption(
-        f"Acceptance Test Coverage: {cov_pct}% ({len(tested_ids)}/{len(reqs)} requirements verified)"
-    )
-
-    for t in tests:
-        st.markdown(
-            f"""
-        <div class="entity-card">
-            <div class="entity-header">
-                <span class="entity-id">{t.id}</span>
-                <span class="chip chip-emerald">VALIDATES {t.requirement_id}</span>
-            </div>
-            <div class="entity-title">{t.title}</div>
-            <div style="background: rgba(9, 14, 23, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 14px; margin-top: 10px; font-family: var(--font-mono); font-size: 0.83rem; line-height: 1.65;">
-                <span style="color: #22D3EE;">GIVEN</span> {t.given}<br/>
-                <span style="color: #FBBF24;">WHEN</span>  {t.when}<br/>
-                <span style="color: #34D399;">THEN</span>  {t.then}
-            </div>
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
-
-# ------------------------------------------------------------------------------
-# 09 // READINESS ENGINE
-# ------------------------------------------------------------------------------
 elif "09 // Readiness Engine" in st.session_state["selected_screen"]:
     st.markdown("## 8-Factor Implementation Readiness Diagnostic")
-    st.caption(
-        "Deterministic audit verifying whether the system specification is safe for technical build."
-    )
-
     readiness = ReadinessEngine.evaluate(nodes, st.session_state["simulated_failures"])
-    st.markdown(
-        f"""
-    <div class="telemetry-card" style="margin-bottom: 20px;">
-        <div class="telemetry-accent accent-emerald"></div>
-        <div class="telemetry-label">Composite Implementation Readiness</div>
-        <div class="telemetry-num">{readiness['total_score']}%</div>
-    </div>
-    """,
-        unsafe_allow_html=True,
-    )
+    st.metric("Composite Readiness Score", f"{readiness['total_score']}%")
+    for name, info in readiness["dimensions"].items():
+        st.progress(info["score"], text=f"{name}: {int(info['score']*100)}% — {info['notes']}")
 
-    for dim_name, info in readiness["dimensions"].items():
-        with st.expander(
-            f"{dim_name} — {int(info['score']*100)}% (Weight: {info['weight']})"
-        ):
-            st.progress(info["score"])
-            st.markdown(f"**Diagnostic Finding:** {info['notes']}")
-
-# ------------------------------------------------------------------------------
-# 10 // EXPORT SPEC PACKAGE & JIRA/GHERKIN BUNDLES
-# ------------------------------------------------------------------------------
 elif "10 // Export Spec Package" in st.session_state["selected_screen"]:
-    st.markdown("## Production Specification & Engineering Handoff Bundles")
-    st.caption(
-        "Export production deliverables: PRD Markdown, JSON Graph models, Jira Issue CSVs, and executable Gherkin .feature suites."
-    )
+    st.markdown("## Specification Package Export")
+    export_bundle = {"project": st.session_state["project_title"], "nodes": [n.model_dump() for n in nodes], "edges": [e.model_dump() for e in edges]}
+    st.download_button("Download Full JSON Bundle", data=json.dumps(export_bundle, indent=2), file_name="trace_bundle.json", mime="application/json")
 
-    # 1. PRD Markdown
-    prd_lines = [
-        f"# SYSTEM SPECIFICATION: {st.session_state['project_title'].upper()}",
-        "",
-        "## 1. Executive Summary & Strategic Rationale",
-    ]
-    for n in nodes:
-        if n.node_type in [NodeType.BUSINESS_OUTCOME, NodeType.PROBLEM]:
-            prd_lines.append(f"### {n.id}: {n.title}\n{n.description}\n")
+elif "11 // Version Snapshots & Diff" in st.session_state["selected_screen"]:
+    st.markdown("## Version Snapshots & Structural Diffing")
+    st.caption("Save named project checkpoints and compare model evolution across architectural revisions.")
 
-    prd_lines.append("## 2. Requirements Engineering Matrix\n")
-    for n in nodes:
-        if n.node_type == NodeType.REQUIREMENT:
-            req_inst = n
-            prd_lines.append(
-                f"### {req_inst.id}: {req_inst.title}\n- **Type:** {getattr(req_inst, 'req_type', RequirementType.FUNCTIONAL).value}\n- **Description:** {req_inst.description}"
+    col_s1, col_s2 = st.columns(2)
+    with col_s1:
+        snap_name = st.text_input("New Snapshot Name", value=f"v1.{len(st.session_state['snapshots'])} - Review Checkpoint")
+        if st.button("Save Current Model Snapshot"):
+            readiness = ReadinessEngine.evaluate(nodes)
+            st.session_state["snapshots"][snap_name] = {
+                "nodes_count": len(nodes),
+                "score": readiness["total_score"],
+                "timestamp": "2026-09-05",
+            }
+            st.success(f"Snapshot '{snap_name}' saved successfully!")
+            st.rerun()
+
+    with col_s2:
+        st.markdown("### Saved Checkpoints")
+        for s_name, s_data in st.session_state["snapshots"].items():
+            st.markdown(
+                f"""
+            <div class="entity-card">
+                <div class="entity-header">
+                    <span class="entity-id">{s_name}</span>
+                    <span class="chip chip-cyan">READINESS: {s_data['score']}%</span>
+                </div>
+                <div class="entity-body">Nodes Tracked: {s_data['nodes_count']} | Saved: {s_data['timestamp']}</div>
+            </div>
+            """,
+                unsafe_allow_html=True,
             )
-            for ac in getattr(req_inst, "acceptance_criteria", []):
-                prd_lines.append(f"  - AC: {ac}")
 
-    prd_markdown = "\n".join(prd_lines)
+    st.markdown("### Structural Revision Diff")
+    snap_keys = list(st.session_state["snapshots"].keys())
+    if len(snap_keys) >= 1:
+        d_col1, d_col2 = st.columns(2)
+        with d_col1:
+            base_snap = st.selectbox("Compare From (Base)", snap_keys, index=0)
+        with d_col2:
+            curr_snap = st.selectbox("Compare To (Current)", snap_keys, index=len(snap_keys)-1)
 
-    # 2. Jira / Linear Import CSV
-    jira_rows = []
-    for n in nodes:
-        if n.node_type == NodeType.REQUIREMENT:
-            jira_rows.append({
-                "Issue Key": n.id,
-                "Issue Type": "Story",
-                "Summary": n.title,
-                "Description": f"{n.description}\n\nAcceptance Criteria:\n" + "\n".join([f"- {ac}" for ac in getattr(n, 'acceptance_criteria', [])]),
-                "Priority": getattr(n, "priority", Priority.HIGH).value,
-                "Labels": f"TRACE,{getattr(n, 'req_type', RequirementType.FUNCTIONAL).value}",
-            })
-    jira_csv = pd.DataFrame(jira_rows).to_csv(index=False)
+        base_data = st.session_state["snapshots"][base_snap]
+        curr_data = st.session_state["snapshots"][curr_snap]
 
-    # 3. Gherkin .feature file
-    gherkin_lines = [f"Feature: {st.session_state['project_title']} Acceptance Verification\n"]
-    for t in [n for n in nodes if n.node_type == NodeType.TEST_CASE]:
-        gherkin_lines.append(f"  Scenario: {t.title} (Validates {getattr(t, 'requirement_id', 'REQ')})")
-        gherkin_lines.append(f"    Given {getattr(t, 'given', 'valid system state')}")
-        gherkin_lines.append(f"    When {getattr(t, 'when', 'action is triggered')}")
-        gherkin_lines.append(f"    Then {getattr(t, 'then', 'expected outcome is verified')}\n")
-    gherkin_text = "\n".join(gherkin_lines)
+        node_diff = curr_data["nodes_count"] - base_data["nodes_count"]
+        score_diff = curr_data["score"] - base_data["score"]
 
-    # 4. Full JSON Bundle
-    export_bundle = {
-        "project": st.session_state["project_title"],
-        "nodes": [n.model_dump() for n in nodes],
-        "edges": [e.model_dump() for e in edges],
-    }
-    json_str = json.dumps(export_bundle, indent=2)
-
-    c_e1, c_e2 = st.columns(2)
-    with c_e1:
-        st.download_button(
-            "Download PRD (Markdown)",
-            data=prd_markdown,
-            file_name="TRACE_SYSTEM_SPEC.md",
-            mime="text/markdown",
-            **get_stretch_kw(st.download_button),
-        )
-        st.download_button(
-            "Download Jira / Linear Tickets (CSV)",
-            data=jira_csv,
-            file_name="jira_import_tickets.csv",
-            mime="text/csv",
-            **get_stretch_kw(st.download_button),
+        st.info(
+            f"**Structural Diff Report ({base_snap} ➔ {curr_snap}):**\n\n"
+            f"• **Node Delta:** {node_diff:+d} entities\n"
+            f"• **Readiness Score Delta:** {score_diff:+.1f}%\n"
+            f"• **Structural Stability:** {'Stable' if node_diff == 0 else 'Evolving'}"
         )
 
-    with c_e2:
-        st.download_button(
-            "Download Gherkin Test Suite (.feature)",
-            data=gherkin_text,
-            file_name="system_acceptance.feature",
-            mime="text/plain",
-            **get_stretch_kw(st.download_button),
-        )
-        st.download_button(
-            "Download Graph Bundle (JSON)",
-            data=json_str,
-            file_name="trace_graph_bundle.json",
-            mime="application/json",
-            **get_stretch_kw(st.download_button),
-        )
-
-# ------------------------------------------------------------------------------
-# 11 // METHODOLOGY
-# ------------------------------------------------------------------------------
-elif "11 // Methodology" in st.session_state["selected_screen"]:
+elif "12 // Methodology" in st.session_state["selected_screen"]:
     st.markdown("## Epistemic Architecture & Non-AI Manifesto")
     st.markdown(
         """
