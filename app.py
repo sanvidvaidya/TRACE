@@ -1329,7 +1329,7 @@ Sales leadership insists on an 'AI-powered real-time churn prediction engine' th
 
 
 # ==============================================================================
-# 7. HIGH-CONTRAST COSMIC DESIGN SYSTEM & READABILITY FIXES
+# 7. HIGH-CONTRAST COSMIC DESIGN SYSTEM & BULLETPROOF ICONS
 # ==============================================================================
 
 MODERN_CSS = """
@@ -1364,7 +1364,50 @@ MODERN_CSS = """
 }
 
 /* ==========================================================================
-   FIX FOR SCREENSHOT 1: Mermaid Sequence Diagram Dark Theme High-Contrast
+   BULLETPROOF FIX: Header Toolbar Icons (Star, Edit/Pencil, GitHub)
+   Uses SVG filter brightness inversion to guarantee 100% crisp white visibility
+   ========================================================================== */
+header[data-testid="stHeader"],
+[data-testid="stToolbar"],
+[data-testid="stToolbarActions"],
+[data-testid="stDecoration"] {
+    background: transparent !important;
+}
+
+header[data-testid="stHeader"] a,
+header[data-testid="stHeader"] button,
+header[data-testid="stHeader"] svg,
+header[data-testid="stHeader"] path,
+[data-testid="stToolbar"] a,
+[data-testid="stToolbar"] button,
+[data-testid="stToolbar"] svg,
+[data-testid="stToolbar"] path,
+[data-testid="stToolbarActions"] a,
+[data-testid="stToolbarActions"] button,
+[data-testid="stToolbarActions"] svg,
+[data-testid="stToolbarActions"] path {
+    color: #FFFFFF !important;
+    fill: #FFFFFF !important;
+    stroke: #FFFFFF !important;
+    opacity: 1 !important;
+}
+
+header[data-testid="stHeader"] svg,
+[data-testid="stToolbar"] svg,
+[data-testid="stToolbarActions"] svg {
+    filter: brightness(0) invert(1) !important;
+    opacity: 0.95 !important;
+}
+
+header[data-testid="stHeader"] svg:hover,
+[data-testid="stToolbar"] svg:hover,
+[data-testid="stToolbarActions"] svg:hover {
+    filter: brightness(0) invert(1) drop-shadow(0 0 6px rgba(6, 182, 212, 0.8)) !important;
+    opacity: 1 !important;
+}
+
+/* ==========================================================================
+   MERMAID SEQUENCE CONTRAST FIX
    ========================================================================== */
 .mermaid text, 
 svg[id^="mermaid-"] text,
@@ -1395,16 +1438,10 @@ svg[id^="mermaid-"] line {
     stroke: #38BDF8 !important;
     stroke-width: 1.5px !important;
 }
-.mermaid .sequenceNumber,
-svg[id^="mermaid-"] .sequenceNumber {
-    fill: #060913 !important;
-    font-weight: 800 !important;
-}
 
 /* ==========================================================================
-   FIX FOR SCREENSHOT 2: Selectbox Container, Value & Label Styling
+   SELECTBOX STYLING FIX
    ========================================================================== */
-/* Selectbox Label: High-contrast, clean uppercase */
 div[data-testid="stSelectbox"] label p {
     color: #F8FAFC !important;
     font-family: var(--font-mono) !important;
@@ -1415,7 +1452,6 @@ div[data-testid="stSelectbox"] label p {
     opacity: 1 !important;
 }
 
-/* Selectbox input box: Replaces the harsh white block with dark glass */
 div[data-baseweb="select"] > div {
     background: rgba(17, 26, 46, 0.9) !important;
     border: 1px solid rgba(255, 255, 255, 0.18) !important;
@@ -1437,7 +1473,6 @@ div[data-baseweb="select"] svg {
     color: #F8FAFC !important;
 }
 
-/* Dropdown popover menu styling */
 div[data-baseweb="popover"],
 div[data-baseweb="menu"] {
     background: #0E172A !important;
@@ -1452,21 +1487,6 @@ div[data-baseweb="menu"] li {
 div[data-baseweb="menu"] li:hover {
     background: rgba(6, 182, 212, 0.15) !important;
     color: #22D3EE !important;
-}
-
-header[data-testid="stHeader"] { background: transparent !important; }
-header[data-testid="stHeader"] button,
-header[data-testid="stHeader"] svg,
-[data-testid="stToolbar"] button,
-[data-testid="stToolbar"] svg,
-[data-testid="stStatusWidget"] button,
-[data-testid="stStatusWidget"] svg,
-.stAppDeployButton button,
-.stAppDeployButton svg {
-    color: #FFFFFF !important;
-    fill: #FFFFFF !important;
-    stroke: #FFFFFF !important;
-    opacity: 0.95 !important;
 }
 
 [data-testid="stSidebar"] [data-testid="stRadio"] label {
@@ -2056,7 +2076,6 @@ elif "05 // Workflows & Sequences" in st.session_state["selected_screen"]:
         [n for n in nodes if n.node_type == NodeType.WORKFLOW_STEP],
         key=lambda s: s.sequence_index,
     )
-    # Inject Mermaid theme initialization directive so text renders with high contrast
     mermaid = [
         "%%{init: {'theme': 'dark', 'themeVariables': {'darkMode': true, 'primaryColor': '#111A2E', 'primaryTextColor': '#F8FAFC', 'primaryBorderColor': '#06B6D4', 'lineColor': '#38BDF8', 'textColor': '#F8FAFC', 'messageTextColor': '#22D3EE'}}}%%",
         "sequenceDiagram",
