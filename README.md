@@ -1,390 +1,86 @@
-```markdown
+# 🧭 TRACE
 
-\# TRACE: From Ambiguous Intent to Executable Systems
+> Turn messy, ambiguous organizational intent into clear, traceable, and executable technology systems.
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+---
 
-A systems engineering studio that turns messy organizational requests into inspectable requirements, dependency graphs, and testable specifications.
+## 📌 The Problem
 
+Most software projects fail before the first line of code is even written. 
 
+Stakeholders communicate in vague goals, emotional pain points, and shifting deadlines:
+> *"We need an AI tool to monitor customer churn in real-time and alert account managers before renewal."*
 
-\---
+Handing that sentence directly to engineers causes chaos:
+* **Undefined latency:** What does "real-time" mean? Sub-second streaming, hourly batches, or a nightly sync?
+* **Direct conflicts:** Does "automatically act" violate standard company policy requiring human approval?
+* **Missing data sources:** Which database actually owns customer sentiment? 
+* **Zero test criteria:** How will QA know whether the tool is working correctly?
 
+**TRACE** sits between ambiguous business requests and engineering execution. It takes raw text, meeting notes, or requirement spreadsheets and structures them into a clear, traceable, and testable system specification.
 
+---
 
-\## Why This Exists
+## ✨ Key Features
 
+* **🕸️ Interactive Traceability Graph:** Click on any goal, requirement, or database to see why it exists (upstream) and what breaks if it fails (downstream).
+* **⚠️ Ambiguity & Conflict Detector:** Automatically catches vague buzzwords ("real-time", "seamless", "smart") and highlights conflicting requirements before development begins.
+* **💥 Blast Radius Simulator:** Toggle off data sources or assumptions to simulate real-world service outages and see which requirements and tests fail.
+* **📊 Implementation Readiness Score:** A transparent 0–100% score that measures whether your project is actually ready for engineering handoff.
+* **🛡️ Security & Compliance Heatmap:** Flags PII exposure, data classification levels, and regulatory readiness (GDPR, CCPA, SOC 2).
+* **📁 Multi-Format Ingestion:** Paste raw text or upload existing CSV, JSON, or Markdown files to generate a systems map instantly.
+* **🚀 Production-Ready Exports:** Download your project as a Markdown PRD, Jira-ready CSV tickets, executable Gherkin .feature test files, or an Executive Decision Memo.
 
+---
 
-Software projects rarely fail at the compiler level. They fail at the translation layer.
+## 🚀 Quick Start
 
+### 1. Clone the repository
+    git clone https://github.com/sanvidvaidya/TRACE.git
+    cd TRACE
 
+### 2. Install dependencies
+    pip install -r requirements.txt
 
-Stakeholders communicate in frustrations, deadlines, and business pressures:
+### 3. Run the app
+    python -m streamlit run app.py
 
-> \*"We need an AI churn tool that monitors customer behavior in real time and automatically alerts account managers before renewal."\*
+The application will open automatically in your browser at `http://localhost:8501`.
 
+---
 
+## 🛠️ How It Works
 
-Handing that sentence directly to an engineering team causes predictable chaos:
+1. **Input:** Paste meeting notes, a project brief, or upload a requirements spreadsheet.
+2. **Structure:** TRACE breaks the input down into strategic goals, functional requirements, data dependencies, and system components.
+3. **Audit:** The engine flags ambiguities, contradictions, and untested requirements.
+4. **Simulate & Refine:** Test failure scenarios, resolve ambiguities in one click, and track readiness.
+5. **Export:** Generate development tickets and test suites ready for sprint planning.
 
-\- \*\*Undefined operational latency:\*\* Does "real-time" mean sub-second streaming, an hourly micro-batch, or a 24-hour nightly warehouse sync?
+---
 
-\- \*\*Direct architectural conflict:\*\* "Automatically alerts and acts" contradicts standard enterprise risk policies requiring human sign-off on commercial outreach.
+## 🏢 Built-in Demo: Project Phoenix
 
-\- \*\*Unverified dependencies:\*\* Which database owns customer sentiment? What are the access protocols and schema constraints?
+TRACE includes a built-in enterprise case study: **Project Phoenix (Renewal Intelligence System)**.
 
-\- \*\*Zero verification criteria:\*\* How will QA verify whether a churn risk score is accurate?
+It models a real-world scenario where a B2B company wants to stop customer churn, but data is trapped across Salesforce, Snowflake, and Zendesk, while sales and customer success teams argue over automated vs. manual customer outreach.
 
+---
 
+## 🧰 Tech Stack
 
-When software teams start writing code against unvetted intent, they build the wrong thing fast. 
+* **Frontend & Runtime:** [Streamlit](https://streamlit.io)
+* **Graph Engine:** [NetworkX](https://networkx.org)
+* **Data Visualizations:** [Plotly](https://plotly.com)
+* **Data Validation:** [Pydantic](https://docs.pydantic.dev)
+* **Data Processing:** [Pandas](https://pandas.pydata.org)
 
+---
 
+## 📄 License
 
-\*\*TRACE\*\* sits between ambiguous human requests and actual engineering implementation. It takes unstructured text, briefs, or spreadsheets and turns them into a verifiable systems specification with full bidirectional traceability.
-
-
-
-\---
-
-
-
-\## What TRACE Is (And What It Refuses To Be)
-
-
-
-Most AI requirements tools are document summarizers: \*paste text \&rarr; generate bullet points\*. 
-
-
-
-TRACE is built on an entirely different premise: \*\*The structured systems graph is the product. AI is only an optional ingestion assistant.\*\*
-
-
-
-
-
-```
-
-
-
-RAW ORGANIZATIONAL INPUT
-
-(Emails, meeting transcripts, briefs, CSV tickets)
-
-│
-
-▼
-
-\[ EPISTEMIC SEPARATION GATE ]
-
-Fact vs. Interpretation vs. Inference vs. Recommendation
-
-│
-
-▼
-
-\[ GRAPH TOPOLOGY ENGINE ]
-
-Outcome ──► Problem ──► Requirement ──► Component ──► Test
-
-│
-
-▼
-
-\[ DETERMINISTIC AUDIT RUNTIME ]
-
-• Lexical ambiguity \& unquantified SLA scanner
-
-• Mutually exclusive requirement contradiction matrix
-
-• 8-factor mathematical readiness engine (0–100%)
-
-│
-
-▼
-
-\[ ENGINEERING HANDOFF ]
-
-Gherkin .feature suites | Jira issue CSVs | Architecture memos
-
-
-
-```
-
-
-
-\### The Epistemic Hierarchy
-
-
-
-Real systems fail when assumptions masquerade as facts. TRACE tags every single node with an epistemic status:
-
-
-
-\- \*\*Source Fact:\*\* A verbatim statement taken directly from stakeholder documentation.
-
-\- \*\*Interpretation:\*\* A normalized functional or non-functional requirement mapped to concrete operational boundaries.
-
-\- \*\*Inference:\*\* An inferred technical component, data dependency, or operational risk.
-
-\- \*\*Recommendation:\*\* An architectural pattern or trade-off proposed to resolve a problem.
-
-\- \*\*Unknown / Needs Validation:\*\* An explicit information vacuum—unassigned ownership, unconfirmed SLAs, or unresolved ambiguities.
-
-
-
-\---
-
-
-
-\## Who This Is For
-
-
-
-\- \*\*Solutions \& Enterprise Architects:\*\* Model system components, evaluate Architectural Decision Records (ADRs) with trade-off radars, inspect data protocols, and run what-if failure simulations.
-
-\- \*\*Product Managers \& Business Analysts:\*\* Convert client meeting notes and fragmented stakeholder desires into structured requirements with Given-When-Then acceptance criteria.
-
-\- \*\*Technology Strategy Consultants:\*\* Audit whether a client is actually ready to build before committing engineering teams to multi-month discovery sprints.
-
-\- \*\*Security \& Governance Leads (GRC):\*\* Track PII exposure paths, verify encryption at rest, and audit regulatory compliance against GDPR and SOC 2 Type II controls.
-
-\- \*\*QA \& Test Leads:\*\* Generate executable Gherkin feature suites directly linked to functional requirements.
-
-
-
-\---
-
-
-
-\## Core Systems \& Features
-
-
-
-\### 1. Bidirectional Traceability Graph Engine
-
-Built on an in-memory NetworkX multigraph:
-
-\- \*\*Upstream Rationale (\*"Why does this exist?"\*):\*\* Walks backward through parent nodes to find the originating business outcome and goal.
-
-\- \*\*Downstream Consequence (\*"What breaks if this fails?"\*):\*\* Traverses forward through dependent components, workflows, and test cases to evaluate blast radius.
-
-\- \*\*Orphan Detection:\*\* Flags ungrounded requirements (scope creep) and unlinked system components (gold plating).
-
-
-
-\### 2. Deterministic Ambiguity \& Contradiction Detection
-
-\- \*\*Pattern Matching:\*\* Flags vague buzzwords (`"real-time"`, `"seamless"`, `"huge scale"`, `"smart"`, `"users"`) and prompts for explicit boundaries.
-
-\- \*\*Contradiction Matrices:\*\* Detects mutually exclusive design stances (e.g., \*Full Autonomous Execution\* vs. \*Mandatory Human Review Gate\*) and presents trade-off decision options.
-
-\- \*\*One-Click Resolvers:\*\* Lets analysts pick an operational stance directly in the UI to rewrite requirements and clear readiness blockers in real time.
-
-
-
-\### 3. What-If Blast Radius Simulator
-
-Simulate service outages and unverified assumptions:
-
-\- Toggle off a data source (e.g., Salesforce CRM or Snowflake) or invalidate an assumption.
-
-\- Instantly observe cascading failures across compromised requirements, broken test cases, and degraded readiness scores.
-
-
-
-\### 4. 8-Factor Implementation Readiness Engine
-
-TRACE calculates project readiness deterministically (0–100%) using an explicit weighted scoring rubric:
-
-
-
-$$\\text{Readiness Score} = \\sum\_{i=1}^{8} w\_i \\cdot D\_i$$
-
-
-
-1\. \*\*Problem Clarity (15%):\*\* Quantified business impact and metric targets.
-
-2\. \*\*Stakeholder Alignment (10%):\*\* Verified ownership and departmental accountability.
-
-3\. \*\*Requirement Precision (20%):\*\* Unambiguous functional requirements with Given-When-Then criteria.
-
-4\. \*\*Data Readiness (15%):\*\* Confirmed systems of record, update frequencies, and access mechanisms.
-
-5\. \*\*Workflow Precision (10%):\*\* Operational steps with mapped actor and system boundaries.
-
-6\. \*\*Architecture Bounds (10%):\*\* System components bounded by layer and lifecycle state.
-
-7\. \*\*Testability Coverage (10%):\*\* Percentage of requirements validated by at least one automated test case.
-
-8\. \*\*Governance \& Security (10%):\*\* Data classification, encryption status, and PII declarations.
-
-
-
-\### 5. Multi-Format Data Hub \& Persona Lenses
-
-\- \*\*Multi-Format Ingestion:\*\* Ingest raw text briefs, CSV requirements registers, or full project JSON bundles.
-
-\- \*\*Persona Lenses:\*\* Filter the UI for \*Executive Sponsors\*, \*Solutions Architects\*, \*QA Leads\*, or \*GRC Officers\*.
-
-\- \*\*Native Mermaid.js Flow:\*\* Renders dark-themed sequence diagrams showing actor-to-system message flows.
-
-\- \*\*Production Handoff Bundles:\*\* Export Markdown PRDs, Jira-compatible CSV sheets, executable Gherkin `.feature` files, and print-ready 1-page Executive Steering Memos.
-
-\- \*\*Version Snapshots \& Diffing:\*\* Save named model checkpoints and perform structural delta diffs between revisions.
-
-
-
-\---
-
-
-
-\## The Reference Case: Project Phoenix
-
-
-
-TRACE ships with a preloaded enterprise scenario: \*\*Project Phoenix — Renewal Intelligence System\*\*.
-
-
-
-\- \*\*Scenario:\*\* A B2B SaaS company experiencing net revenue retention drop from 108% to 91%.
-
-\- \*\*Data Fragmentation:\*\* Contract data in Salesforce, seat telemetry in Snowflake, ticket logs in Zendesk, and account nuances in private email threads.
-
-\- \*\*Embedded Conflicts:\*\* Sales leadership demands \*autonomous real-time intervention\*, while Customer Success leadership mandates \*human-in-the-loop review\*.
-
-\- \*\*Data Reality:\*\* Product telemetry only refreshes once every 24 hours, making sub-minute real-time alerts an architectural anti-pattern without pipeline refactoring.
-
-
-
-\---
-
-
-
-\## Tech Stack
-
-
-
-\- \*\*Language:\*\* Python 3.10+
-
-\- \*\*Frontend / App Layer:\*\* Streamlit
-
-\- \*\*Domain Modeling:\*\* Pydantic v2
-
-\- \*\*Graph Topology:\*\* NetworkX
-
-\- \*\*Data Visualizations:\*\* Plotly Graph Objects
-
-\- \*\*Sequence Diagrams:\*\* Mermaid.js
-
-\- \*\*Tabular Data:\*\* Pandas
-
-
-
-\---
-
-
-
-\## Local Setup
-
-
-
-\### 1. Clone the repository
-
-```bash
-
-git clone \[https://github.com/sanvidvaidya/TRACE.git](https://github.com/sanvidvaidya/TRACE.git)
-
-cd TRACE
-
-
-
-```
-
-
-
-\### 2. Install dependencies
-
-
-
-```bash
-
-pip install -r requirements.txt
-
-
-
-```
-
-
-
-\### 3. Run the application
-
-
-
-```bash
-
-python -m streamlit run app.py
-
-
-
-```
-
-
-
-Open `http://localhost:8501` in your browser.
-
-
-
-\---
-
-
-
-\## Deploying to Streamlit Cloud
-
-
-
-1\. Fork or push this repository to GitHub.
-
-2\. Go to \[share.streamlit.io](https://share.streamlit.io/) and log in with GitHub.
-
-3\. Select your repository, set the branch to `main`, and enter `app.py` as the main file path.
-
-4\. Click \*\*Deploy\*\*.
-
-
-
-\---
-
-
-
-\## System Boundaries (What TRACE Deliberately Does Not Do)
-
-
-
-\* \*\*Does not write production application code:\*\* It models the architecture so engineering teams build the right system the first time.
-
-\* \*\*Does not trust generative AI output blindly:\*\* LLMs propose candidates; deterministic rule engines enforce constraints, and human analysts confirm decisions.
-
-\* \*\*Does not hide trade-offs:\*\* When an automation requirement contradicts an audit policy, TRACE flags it as an explicit conflict rather than picking a silent default.
-
-
-
-\---
-
-
-
-\## License
-
-
-
-MIT License — see \[LICENSE](https://www.google.com/search?q=LICENSE) for details.
-
-
-
-```
-
-
-
-```
-
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
