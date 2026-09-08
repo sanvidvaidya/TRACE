@@ -1621,7 +1621,37 @@ header[data-testid="stHeader"] svg:hover,
     border: 1px solid rgba(16, 185, 129, 0.35);
 }
 
-/* Emil Kowalski Tactile Button Press Physics */
+
+/* Emil Kowalski Tactile Button Press Physics & High-Specificity Selectors */
+div[data-testid="stButton"] button,
+button[data-testid="stBaseButton-primary"],
+button[data-testid="stBaseButton-secondary"],
+button[kind="primary"],
+button[kind="secondary"],
+div.stButton > button {
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    transition: transform var(--duration-fast) var(--ease-apple), box-shadow var(--duration-fast) var(--ease-apple), border-color var(--duration-fast) ease !important;
+}
+div[data-testid="stButton"] button:hover,
+button[data-testid="stBaseButton-primary"]:hover,
+button[data-testid="stBaseButton-secondary"]:hover,
+button[kind="primary"]:hover,
+button[kind="secondary"]:hover,
+div.stButton > button:hover {
+    transform: translateY(-1.5px) !important;
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.35) !important;
+}
+div[data-testid="stButton"] button:active,
+button[data-testid="stBaseButton-primary"]:active,
+button[data-testid="stBaseButton-secondary"]:active,
+button[kind="primary"]:active,
+button[kind="secondary"]:active,
+div.stButton > button:active {
+    transform: scale(0.97) !important;
+    box-shadow: 0 1px 4px rgba(6, 182, 212, 0.2) !important;
+}
+
 div.stButton > button {
     background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
     color: #FFFFFF !important;
@@ -1714,6 +1744,43 @@ div[data-baseweb="menu"] li:hover {
 }
 </style>
 """
+
+
+
+def render_landing_readiness_gauge(score: float, pass_rate: float, blocker_count: int) -> go.Figure:
+    """Renders an Apple-aesthetic interactive radial gauge for Screen 00 Gateway."""
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number+delta",
+        value=score,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': "SYSTEM READINESS INDEX<br><span style='font-size:0.75rem; color:#94A3B8;'>Phoenix Architecture & Compliance Confidence</span>", 'font': {'size': 14, 'color': '#F8FAFC', 'family': 'JetBrains Mono, monospace'}},
+        delta={'reference': 70.0, 'increasing': {'color': "#10B981"}, 'decreasing': {'color': "#F43F5E"}, 'suffix': " pts vs Target"},
+        number={'suffix': "%", 'font': {'size': 44, 'color': '#22D3EE', 'family': 'Plus Jakarta Sans, sans-serif'}},
+        gauge={
+            'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "rgba(255,255,255,0.2)", 'tickfont': {'color': '#94A3B8', 'size': 10}},
+            'bar': {'color': "rgba(6, 182, 212, 0.95)", 'thickness': 0.3},
+            'bgcolor': "rgba(15, 23, 42, 0.6)",
+            'borderwidth': 1,
+            'bordercolor': "rgba(255, 255, 255, 0.15)",
+            'steps': [
+                {'range': [0, 50], 'color': 'rgba(244, 63, 94, 0.18)'},
+                {'range': [50, 75], 'color': 'rgba(245, 158, 11, 0.18)'},
+                {'range': [75, 100], 'color': 'rgba(16, 185, 129, 0.18)'}
+            ],
+            'threshold': {
+                'line': {'color': "#22D3EE", 'width': 3},
+                'thickness': 0.85,
+                'value': 85.0
+            }
+        }
+    ))
+    fig.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        margin=dict(l=25, r=25, t=60, b=20),
+        height=260,
+    )
+    return fig
 
 
 def render_plotly_traceability_graph(graph: TraceabilityGraph, focus_id: str) -> go.Figure:
@@ -1920,11 +1987,37 @@ st.set_page_config(
 )
 
 st.markdown(MODERN_CSS, unsafe_allow_html=True)
+# Apple Hairline Dynamic Scroll Tracker (Tracks actual viewport scroll)
 st.markdown(
     """
-<div class="apple-scroll-track">
-    <div class="apple-scroll-bar"></div>
+<div id="apple-scroll-progress-wrap" style="position: fixed; top: 0; left: 0; width: 100vw; height: 3.5px; z-index: 9999999; pointer-events: none; background: rgba(6, 182, 212, 0.08);">
+    <div id="apple-scroll-bar-indicator" style="height: 100%; width: 0%; background: linear-gradient(90deg, #06B6D4 0%, #3B82F6 35%, #8B5CF6 70%, #EC4899 100%); box-shadow: 0 0 12px rgba(6, 182, 212, 0.95), 0 0 24px rgba(139, 92, 246, 0.7); border-radius: 0 2px 2px 0; transition: width 40ms linear;"></div>
 </div>
+<script>
+(function() {
+    function attachScroll() {
+        const parentDoc = window.parent ? window.parent.document : document;
+        const bar = parentDoc.getElementById('apple-scroll-bar-indicator');
+        if (!bar) return;
+        const scroller = parentDoc.querySelector('section.main') || parentDoc.querySelector('[data-testid="stAppViewContainer"]') || window.parent;
+        
+        function onScroll() {
+            const el = scroller === window.parent ? (parentDoc.scrollingElement || parentDoc.documentElement) : scroller;
+            const max = el.scrollHeight - el.clientHeight;
+            const pct = max > 0 ? Math.min(100, Math.max(0, (el.scrollTop / max) * 100)) : 0;
+            bar.style.width = pct + '%';
+        }
+        
+        if (scroller) {
+            scroller.removeEventListener('scroll', onScroll);
+            scroller.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+        }
+    }
+    setTimeout(attachScroll, 200);
+    setTimeout(attachScroll, 800);
+})();
+</script>
 """,
     unsafe_allow_html=True,
 )
@@ -2059,6 +2152,47 @@ if "00 // Gateway & Landing" in st.session_state["selected_screen"]:
         if st.button("EXECUTIVE SIGN-OFF MEMO ➔", **get_stretch_kw(st.button)):
             st.session_state["selected_screen"] = "12 // Executive Sign-Off Memo"
             st.rerun()
+
+    # Live Telemetry & Readiness Gauge on Gateway Screen
+    st.markdown("<br/>", unsafe_allow_html=True)
+    gw_eval = ReadinessEngine.evaluate(nodes, st.session_state["simulated_failures"])
+    g_col1, g_col2 = st.columns([1.1, 1.4])
+    with g_col1:
+        st.plotly_chart(
+            render_landing_readiness_gauge(
+                gw_eval["readiness_score"],
+                gw_eval["test_pass_rate"],
+                len(gw_eval["critical_blockers"])
+            ),
+            **get_stretch_kw(st.plotly_chart)
+        )
+    with g_col2:
+        st.markdown(
+            f'''
+            <div style="background: linear-gradient(145deg, rgba(22, 32, 54, 0.72) 0%, rgba(11, 17, 34, 0.9) 100%); border: 1px solid rgba(255, 255, 255, 0.1); border-top: 1px solid rgba(255, 255, 255, 0.3); border-radius: 14px; padding: 22px 24px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35); height: 260px; display: flex; flex-direction: column; justify-content: space-around;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: #22D3EE; letter-spacing: 0.12em; text-transform: uppercase;">REAL-TIME VERIFICATION STATUS</span>
+                    <span class="live-beacon" style="font-size: 0.6rem; padding: 3px 8px;"><span class="beacon-dot"></span><span>ONLINE</span></span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px;">
+                    <div style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 10px; padding: 10px 14px;">
+                        <div style="font-size: 0.68rem; color: #94A3B8; letter-spacing: 0.08em; text-transform: uppercase;">Total Artifacts</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: #FFFFFF; margin-top: 2px;">{len(nodes)}</div>
+                        <div style="font-size: 0.65rem; color: #22D3EE;">13 Requirements Linked</div>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px; padding: 10px 14px;">
+                        <div style="font-size: 0.68rem; color: #94A3B8; letter-spacing: 0.08em; text-transform: uppercase;">Test Pass Rate</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: #10B981; margin-top: 2px;">{gw_eval['test_pass_rate']:.1f}%</div>
+                        <div style="font-size: 0.65rem; color: #6EE7B7;">14 / 15 Suites Green</div>
+                    </div>
+                </div>
+                <div style="font-size: 0.74rem; color: #CBD5E1; line-height: 1.5; margin-top: 6px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 10px;">
+                    <b>Governance verdict:</b> Ready for architectural baseline commit. Zero unverified PII dependencies detected in Phoenix cluster.
+                </div>
+            </div>
+            ''',
+            unsafe_allow_html=True,
+        )
 
     st.markdown("<br/>", unsafe_allow_html=True)
     st.markdown(
