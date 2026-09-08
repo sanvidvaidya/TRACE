@@ -1334,71 +1334,133 @@ Sales leadership insists on an 'AI-powered real-time churn prediction engine' th
 
 MODERN_CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    --bg-base: #070B16;
+    --bg-base: #060913;
+    --bg-card: rgba(15, 23, 42, 0.72);
     --text-primary: #F8FAFC;
-    --text-secondary: #E2E8F0;
+    --text-secondary: #CBD5E1;
     --text-tertiary: #94A3B8;
     --accent-cyan: #06B6D4;
+    --accent-cyan-glow: rgba(6, 182, 212, 0.28);
     --accent-emerald: #10B981;
     --accent-amber: #F59E0B;
     --accent-rose: #F43F5E;
+    --accent-purple: #8B5CF6;
     --font-mono: 'JetBrains Mono', monospace;
     --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    
+    /* Emil Kowalski & Apple Motion Tokens */
+    --ease-apple: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-fast: 120ms;
+    --duration-normal: 220ms;
+    --duration-smooth: 300ms;
 }
 
+/* Apple Hairline Scroll Progress Bar pinned to top of viewport */
+.apple-scroll-track {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 3px;
+    background: transparent;
+    z-index: 999999;
+    pointer-events: none;
+}
+.apple-scroll-bar {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #06B6D4 0%, #3B82F6 30%, #8B5CF6 70%, #EC4899 100%);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.8), 0 0 20px rgba(139, 92, 246, 0.5);
+    transform-origin: 0% 50%;
+    animation: appleScrollPulse 4s ease-in-out infinite alternate;
+}
+@keyframes appleScrollPulse {
+    0% { filter: brightness(1); }
+    100% { filter: brightness(1.35) drop-shadow(0 0 8px rgba(6, 182, 212, 0.9)); }
+}
+
+/* App Canvas with Luminous Cosmic Mesh */
 .stApp {
     background-color: #060913 !important;
     background-image: 
-        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.22) 0px, transparent 48%),
-        radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.25) 0px, transparent 50%),
+        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.18) 0px, transparent 46%),
+        radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.22) 0px, transparent 48%),
         radial-gradient(at 50% 45%, rgba(13, 20, 38, 0.96) 0px, transparent 100%),
-        radial-gradient(at 100% 100%, rgba(217, 70, 239, 0.16) 0px, transparent 52%),
-        radial-gradient(at 0% 100%, rgba(16, 185, 129, 0.16) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(217, 70, 239, 0.14) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(16, 185, 129, 0.14) 0px, transparent 48%),
         radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px) !important;
-    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 30px 30px !important;
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 32px 32px !important;
     color: var(--text-primary) !important;
     font-family: var(--font-sans) !important;
 }
 
-/* ==========================================================================
-   BULLETPROOF FIX: Header Toolbar Icons (Star, Edit/Pencil, GitHub)
-   Uses SVG filter brightness inversion to guarantee 100% crisp white visibility
-   ========================================================================== */
+/* Apple Entrance Animation */
+@keyframes appleReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Live Telemetry Beacon (Dynamic Island style) */
+.live-beacon {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.70rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(6, 182, 212, 0.12);
+    border: 1px solid rgba(6, 182, 212, 0.35);
+    color: #22D3EE;
+    box-shadow: 0 0 16px rgba(6, 182, 212, 0.2);
+}
+.beacon-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22D3EE;
+    position: relative;
+}
+.beacon-dot::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1.5px solid #22D3EE;
+    animation: radarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes radarPing {
+    0% { transform: scale(0.8); opacity: 0.95; }
+    100% { transform: scale(2.6); opacity: 0; }
+}
+
+/* Header & Toolbars */
 header[data-testid="stHeader"],
 [data-testid="stToolbar"],
 [data-testid="stToolbarActions"],
 [data-testid="stDecoration"] {
     background: transparent !important;
 }
-
-header[data-testid="stHeader"] a,
-header[data-testid="stHeader"] button,
-header[data-testid="stHeader"] svg,
-header[data-testid="stHeader"] path,
-[data-testid="stToolbar"] a,
-[data-testid="stToolbar"] button,
-[data-testid="stToolbar"] svg,
-[data-testid="stToolbar"] path,
-[data-testid="stToolbarActions"] a,
-[data-testid="stToolbarActions"] button,
-[data-testid="stToolbarActions"] svg,
-[data-testid="stToolbarActions"] path {
-    color: #FFFFFF !important;
-    fill: #FFFFFF !important;
-    stroke: #FFFFFF !important;
-    opacity: 1 !important;
-}
-
 header[data-testid="stHeader"] svg,
 [data-testid="stToolbar"] svg,
 [data-testid="stToolbarActions"] svg {
     filter: brightness(0) invert(1) !important;
     opacity: 0.95 !important;
 }
-
 header[data-testid="stHeader"] svg:hover,
 [data-testid="stToolbar"] svg:hover,
 [data-testid="stToolbarActions"] svg:hover {
@@ -1406,245 +1468,445 @@ header[data-testid="stHeader"] svg:hover,
     opacity: 1 !important;
 }
 
-/* ==========================================================================
-   MERMAID SEQUENCE CONTRAST FIX
-   ========================================================================== */
-.mermaid text, 
-svg[id^="mermaid-"] text,
-.mermaid tspan {
-    fill: #F8FAFC !important;
-    color: #F8FAFC !important;
-    font-family: var(--font-mono) !important;
-    font-size: 12px !important;
+/* Hero Section */
+.hero-container {
+    padding: 42px 0 28px 0;
+    text-align: center;
+    max-width: 960px;
+    margin: 0 auto;
+    animation: appleReveal 300ms var(--ease-apple) both;
 }
-.mermaid .messageText,
-svg[id^="mermaid-"] .messageText {
-    fill: #22D3EE !important;
-    stroke: none !important;
-    font-weight: 600 !important;
-}
-.mermaid .actor,
-svg[id^="mermaid-"] .actor {
-    fill: #111A2E !important;
-    stroke: #06B6D4 !important;
-    stroke-width: 1.5px !important;
-}
-.mermaid .actor-box,
-svg[id^="mermaid-"] .actor-box {
-    fill: #111A2E !important;
-}
-.mermaid line,
-svg[id^="mermaid-"] line {
-    stroke: #38BDF8 !important;
-    stroke-width: 1.5px !important;
-}
-
-/* ==========================================================================
-   SELECTBOX STYLING FIX
-   ========================================================================== */
-div[data-testid="stSelectbox"] label p {
-    color: #F8FAFC !important;
-    font-family: var(--font-mono) !important;
-    font-size: 0.76rem !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.08em !important;
-    text-transform: uppercase !important;
-    opacity: 1 !important;
-}
-
-div[data-baseweb="select"] > div {
-    background: rgba(17, 26, 46, 0.9) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    border-radius: 8px !important;
-    color: #FFFFFF !important;
-}
-div[data-baseweb="select"] > div:hover {
-    border-color: #06B6D4 !important;
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.25) !important;
-}
-div[data-baseweb="select"] span {
-    color: #FFFFFF !important;
-    font-family: var(--font-sans) !important;
-    font-size: 0.88rem !important;
-    font-weight: 600 !important;
-}
-div[data-baseweb="select"] svg {
-    fill: #F8FAFC !important;
-    color: #F8FAFC !important;
-}
-
-div[data-baseweb="popover"],
-div[data-baseweb="menu"] {
-    background: #0E172A !important;
-    border: 1px solid rgba(255, 255, 255, 0.16) !important;
-    border-radius: 8px !important;
-}
-div[data-baseweb="menu"] li {
-    color: #F8FAFC !important;
-    font-family: var(--font-sans) !important;
-    font-size: 0.85rem !important;
-}
-div[data-baseweb="menu"] li:hover {
-    background: rgba(6, 182, 212, 0.15) !important;
-    color: #22D3EE !important;
-}
-
-[data-testid="stSidebar"] [data-testid="stRadio"] label {
-    background: transparent !important;
-    padding: 3px 0 !important;
-}
-[data-testid="stSidebar"] [data-testid="stRadio"] label p {
-    color: #F8FAFC !important;
-    font-weight: 500 !important;
-    font-size: 0.88rem !important;
-    opacity: 0.9 !important;
-}
-[data-testid="stSidebar"] [data-testid="stRadio"] label:hover p {
-    color: #22D3EE !important;
-    opacity: 1 !important;
-}
-
-[data-testid="stExpander"] {
-    background: rgba(15, 23, 42, 0.6) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-radius: 8px !important;
-}
-[data-testid="stExpander"] summary { color: #F8FAFC !important; opacity: 1 !important; }
-[data-testid="stExpander"] summary p {
-    color: #F8FAFC !important;
-    font-family: var(--font-mono) !important;
-    font-size: 0.82rem !important;
-    font-weight: 600 !important;
-    opacity: 1 !important;
-}
-
-span[data-testid="stIconMaterial"],
-[data-testid="stSidebarCollapseButton"] span,
-[data-testid="stExpanderToggleIcon"] span,
-[class*="material-symbols"],
-[class*="material-icons"] {
-    font-family: "Material Symbols Rounded", "Material Icons" !important;
-    display: inline-block !important;
-    font-style: normal !important;
-    letter-spacing: normal !important;
-    text-transform: none !important;
-    white-space: nowrap !important;
-    direction: ltr !important;
-}
-
-footer { visibility: hidden !important; }
-#MainMenu { visibility: hidden !important; }
-
-[data-testid="stSidebar"] {
-    background: rgba(8, 14, 28, 0.92) !important;
-    backdrop-filter: blur(24px) !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
-
-h1, h2, h3, h4 {
-    font-family: var(--font-sans) !important;
-    font-weight: 800 !important;
-    color: var(--text-primary) !important;
-    letter-spacing: -0.03em !important;
-}
-
-.hero-container { padding: 42px 0 28px 0; text-align: center; max-width: 920px; margin: 0 auto; }
 .hero-pill {
     font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     color: #22D3EE;
     background: rgba(6, 182, 212, 0.12);
-    padding: 6px 14px;
+    padding: 6px 16px;
     border-radius: 999px;
     border: 1px solid rgba(6, 182, 212, 0.35);
     display: inline-block;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.22);
 }
 .hero-headline {
-    font-size: 3.2rem;
+    font-size: 3.3rem;
     font-weight: 800;
-    line-height: 1.15;
-    background: linear-gradient(135deg, #FFFFFF 20%, #CBD5E1 55%, #67E8F9 100%);
+    line-height: 1.12;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #FFFFFF 15%, #E2E8F0 50%, #67E8F9 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 18px;
 }
-.hero-sub { font-size: 1.15rem; color: #94A3B8; line-height: 1.6; max-width: 760px; margin: 0 auto 32px auto; }
-
-.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 32px 0; }
-.feature-card {
-    background: linear-gradient(145deg, rgba(26, 36, 60, 0.6) 0%, rgba(13, 20, 36, 0.8) 100%);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 24px 22px;
+.hero-sub {
+    font-size: 1.15rem;
+    color: #94A3B8;
+    line-height: 1.65;
+    max-width: 780px;
+    margin: 0 auto 34px auto;
 }
-.feature-icon { font-size: 1.6rem; margin-bottom: 12px; }
-.feature-title { font-size: 1.05rem; font-weight: 700; color: #FFFFFF; margin-bottom: 8px; }
-.feature-desc { font-size: 0.86rem; color: #94A3B8; line-height: 1.6; }
 
-.telemetry-card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.72) 0%, rgba(15, 23, 42, 0.82) 100%);
-    backdrop-filter: blur(18px);
+/* Emil Kowalski Apple Glass Cards with Top Light-Catch Edge */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin: 32px 0;
+}
+.feature-card {
+    background: linear-gradient(145deg, rgba(22, 32, 54, 0.7) 0%, rgba(11, 17, 34, 0.85) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 20px 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 14px;
+    padding: 26px 24px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+    transition: transform var(--duration-normal) var(--ease-apple), box-shadow var(--duration-normal) var(--ease-apple), border-color var(--duration-normal) ease;
+    animation: appleReveal 280ms var(--ease-apple) both;
+}
+.feature-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(6, 182, 212, 0.45);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.48), 0 0 24px rgba(6, 182, 212, 0.2);
+}
+.feature-icon { font-size: 1.7rem; margin-bottom: 14px; }
+.feature-title { font-size: 1.08rem; font-weight: 700; color: #FFFFFF; margin-bottom: 8px; letter-spacing: -0.015em; }
+.feature-desc { font-size: 0.88rem; color: #94A3B8; line-height: 1.62; }
+
+/* Telemetry Cards with Staggered Animations */
+.telemetry-card {
+    background: linear-gradient(135deg, rgba(26, 38, 62, 0.75) 0%, rgba(13, 20, 38, 0.88) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 14px;
+    padding: 22px 24px;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32);
+    transition: transform var(--duration-normal) var(--ease-apple), box-shadow var(--duration-normal) var(--ease-apple), border-color var(--duration-normal) ease;
+    animation: appleReveal 280ms var(--ease-apple) both;
 }
-.telemetry-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.telemetry-card:hover {
+    transform: translateY(-2.5px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.42), 0 0 20px rgba(6, 182, 212, 0.18);
+    border-color: rgba(6, 182, 212, 0.35);
+}
+.telemetry-accent { position: absolute; top: 0; left: 0; right: 0; height: 3.5px; }
 .accent-cyan { background: linear-gradient(90deg, #06B6D4, #3B82F6); }
 .accent-emerald { background: linear-gradient(90deg, #10B981, #06B6D4); }
 .accent-amber { background: linear-gradient(90deg, #F59E0B, #EF4444); }
 .accent-rose { background: linear-gradient(90deg, #F43F5E, #EC4899); }
+.telemetry-label { font-family: var(--font-mono); font-size: 0.72rem; color: #CBD5E1; text-transform: uppercase; font-weight: 600; letter-spacing: 0.08em; }
+.telemetry-num { font-family: var(--font-mono); font-size: 2.3rem; font-weight: 800; color: #FFFFFF; margin-top: 6px; letter-spacing: -0.02em; }
 
-.telemetry-label { font-family: var(--font-mono); font-size: 0.72rem; color: #CBD5E1; text-transform: uppercase; font-weight: 600; }
-.telemetry-num { font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; color: #FFFFFF; margin-top: 6px; }
-
+/* Entity Cards */
 .entity-card {
-    background: linear-gradient(180deg, rgba(26, 36, 58, 0.65) 0%, rgba(15, 23, 42, 0.8) 100%);
-    backdrop-filter: blur(14px);
+    background: linear-gradient(180deg, rgba(22, 32, 54, 0.72) 0%, rgba(12, 19, 36, 0.85) 100%);
+    backdrop-filter: blur(18px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
-    padding: 20px 24px;
-    margin-bottom: 14px;
-}
-.entity-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.06); padding-bottom: 10px; margin-bottom: 12px; }
-.entity-id { font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; color: #FFFFFF; }
-.entity-title { font-size: 1.02rem; font-weight: 600; color: #FFFFFF; margin-bottom: 8px; }
-.entity-body { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
-.entity-footer { display: flex; gap: 18px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); padding-top: 10px; border-top: 1px dashed rgba(255, 255, 255, 0.06); }
-
-.chip { font-family: var(--font-mono); font-size: 0.70rem; font-weight: 600; padding: 3px 9px; border-radius: 4px; display: inline-flex; align-items: center; }
-.chip-cyan { background: rgba(6, 182, 212, 0.15); color: #22D3EE; border: 1px solid rgba(6, 182, 212, 0.35); }
-.chip-emerald { background: rgba(16, 185, 129, 0.15); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.35); }
-.chip-amber { background: rgba(245, 158, 11, 0.15); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.35); }
-.chip-rose { background: rgba(244, 63, 94, 0.15); color: #FB7185; border: 1px solid rgba(244, 63, 94, 0.35); }
-
-.decision-memo-sheet {
-    background: #0C1222;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
-    padding: 36px 40px;
-    margin: 20px 0;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+    transition: transform var(--duration-normal) var(--ease-apple), box-shadow var(--duration-normal) var(--ease-apple), border-color var(--duration-normal) ease;
+    animation: appleReveal 260ms var(--ease-apple) both;
+}
+.entity-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38), 0 0 16px rgba(6, 182, 212, 0.15);
+    border-color: rgba(6, 182, 212, 0.3);
+}
+.entity-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.06); padding-bottom: 12px; margin-bottom: 12px; }
+.entity-id { font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; color: #22D3EE; }
+.entity-title { font-size: 1.05rem; font-weight: 600; color: #FFFFFF; margin-bottom: 8px; letter-spacing: -0.015em; }
+.entity-body { font-size: 0.88rem; color: #CBD5E1; line-height: 1.62; margin-bottom: 12px; }
+.entity-footer { display: flex; gap: 20px; font-family: var(--font-mono); font-size: 0.75rem; color: #94A3B8; padding-top: 10px; border-top: 1px dashed rgba(255, 255, 255, 0.08); }
+
+/* Badge Chips */
+.chip { font-family: var(--font-mono); font-size: 0.70rem; font-weight: 600; padding: 3px 10px; border-radius: 6px; display: inline-flex; align-items: center; letter-spacing: 0.04em; }
+.chip-cyan { background: rgba(6, 182, 212, 0.16); color: #22D3EE; border: 1px solid rgba(6, 182, 212, 0.38); }
+.chip-emerald { background: rgba(16, 185, 129, 0.16); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.38); }
+.chip-amber { background: rgba(245, 158, 11, 0.16); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.38); }
+.chip-rose { background: rgba(244, 63, 94, 0.16); color: #FB7185; border: 1px solid rgba(244, 63, 94, 0.38); }
+
+/* Decision Memo Dossier */
+.decision-memo-sheet {
+    background: linear-gradient(155deg, rgba(14, 22, 42, 0.95) 0%, rgba(8, 12, 24, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-top: 1px solid rgba(6, 182, 212, 0.4);
+    border-radius: 16px;
+    padding: 38px 44px;
+    margin: 22px 0;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(6, 182, 212, 0.12);
+    position: relative;
+    overflow: hidden;
+}
+.decision-memo-sheet::before {
+    content: "AUDITED ARCHITECTURE";
+    position: absolute;
+    right: 24px;
+    top: 24px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: #10B981;
+    background: rgba(16, 185, 129, 0.12);
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(16, 185, 129, 0.35);
 }
 
+/* Emil Kowalski Tactile Button Press Physics */
 div.stButton > button {
     background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
     color: #FFFFFF !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    border-radius: 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-radius: 10px !important;
     font-family: var(--font-mono) !important;
     font-size: 0.84rem !important;
     font-weight: 600 !important;
-    padding: 9px 18px !important;
+    padding: 10px 20px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+    transition: transform var(--duration-fast) var(--ease-apple), box-shadow var(--duration-fast) var(--ease-apple), border-color var(--duration-fast) ease, background var(--duration-fast) ease !important;
+}
+div.stButton > button:hover {
+    transform: translateY(-1.5px) !important;
+    border-color: rgba(6, 182, 212, 0.7) !important;
+    box-shadow: 0 8px 24px rgba(6, 182, 212, 0.28) !important;
+}
+div.stButton > button:active {
+    transform: scale(0.97) translateY(0) !important;
+    box-shadow: 0 2px 8px rgba(6, 182, 212, 0.35) !important;
+}
+
+/* Streamlit Native Inputs & Selectboxes */
+div[data-baseweb="select"] > div {
+    background: rgba(17, 26, 46, 0.92) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-radius: 10px !important;
+    color: #FFFFFF !important;
+    transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease !important;
+}
+div[data-baseweb="select"] > div:hover {
+    border-color: #06B6D4 !important;
+    box-shadow: 0 0 14px rgba(6, 182, 212, 0.25) !important;
+}
+div[data-baseweb="popover"], div[data-baseweb="menu"] {
+    background: #0C1527 !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-radius: 10px !important;
+}
+div[data-baseweb="menu"] li:hover {
+    background: rgba(6, 182, 212, 0.18) !important;
+    color: #22D3EE !important;
+}
+
+/* Translucent Frosted Sidebar */
+[data-testid="stSidebar"] {
+    background: rgba(7, 12, 24, 0.94) !important;
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Native Tabs with Apple Pill Style */
+[data-testid="stTabs"] button[role="tab"] {
+    font-family: var(--font-mono) !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    color: #94A3B8 !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+    transition: all var(--duration-fast) var(--ease-apple) !important;
+}
+[data-testid="stTabs"] button[role="tab"]:hover {
+    color: #F8FAFC !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+    color: #22D3EE !important;
+    background: rgba(6, 182, 212, 0.14) !important;
+    border-bottom: 2px solid #06B6D4 !important;
+}
+
+/* Expanders */
+[data-testid="stExpander"] {
+    background: rgba(15, 23, 42, 0.65) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 10px !important;
+    transition: border-color var(--duration-fast) ease !important;
+}
+[data-testid="stExpander"]:hover {
+    border-color: rgba(6, 182, 212, 0.35) !important;
+}
+
+/* Accessibility: Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    *, .telemetry-card, .entity-card, .feature-card, .decision-memo-sheet, .apple-scroll-bar, div.stButton > button {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+    }
 }
 </style>
 """
+
+
+def render_plotly_traceability_graph(graph: TraceabilityGraph, focus_id: str) -> go.Figure:
+    """Renders an interactive bidirectional Plotly network graph with physical spring layout."""
+    nodes = graph.all_nodes()
+    edges = graph.all_edges()
+
+    G = nx.DiGraph()
+    for n in nodes:
+        G.add_node(
+            n.id,
+            title=n.title,
+            node_type=n.node_type.value,
+            status=n.validation_status.value,
+            desc=n.description,
+        )
+    for e in edges:
+        G.add_edge(e.source_id, e.target_id, relation=e.relation)
+
+    pos = nx.spring_layout(G, seed=42, k=1.3, iterations=75)
+
+    upstream_items = graph.trace_upstream(focus_id)
+    downstream_items = graph.trace_downstream(focus_id)
+    upstream_ids = {item["from_id"] for item in upstream_items}
+    downstream_ids = {item["to_id"] for item in downstream_items}
+    related_ids = upstream_ids | downstream_ids | {focus_id}
+
+    norm_edge_x, norm_edge_y = [], []
+    high_edge_x, high_edge_y = [], []
+    for u, v in G.edges():
+        x0, y0 = pos[u]
+        x1, y1 = pos[v]
+        if (u == focus_id and v in downstream_ids) or (v == focus_id and u in upstream_ids) or (u in related_ids and v in related_ids):
+            high_edge_x.extend([x0, x1, None])
+            high_edge_y.extend([y0, y1, None])
+        else:
+            norm_edge_x.extend([x0, x1, None])
+            norm_edge_y.extend([y0, y1, None])
+
+    fig = go.Figure()
+
+    if norm_edge_x:
+        fig.add_trace(
+            go.Scatter(
+                x=norm_edge_x,
+                y=norm_edge_y,
+                line=dict(width=1.2, color="rgba(148, 163, 184, 0.22)"),
+                hoverinfo="none",
+                mode="lines",
+            )
+        )
+
+    if high_edge_x:
+        fig.add_trace(
+            go.Scatter(
+                x=high_edge_x,
+                y=high_edge_y,
+                line=dict(width=2.8, color="rgba(6, 182, 212, 0.95)"),
+                hoverinfo="none",
+                mode="lines",
+            )
+        )
+
+    color_map = {
+        NodeType.BUSINESS_OUTCOME.value: "#10B981",
+        NodeType.PROBLEM.value: "#F59E0B",
+        NodeType.GOAL.value: "#06B6D4",
+        NodeType.REQUIREMENT.value: "#3B82F6",
+        NodeType.SYSTEM_COMPONENT.value: "#8B5CF6",
+        NodeType.DATA_SOURCE.value: "#0EA5E9",
+        NodeType.TEST_CASE.value: "#14B8A6",
+        NodeType.QUESTION.value: "#F43F5E",
+        NodeType.ASSUMPTION.value: "#EC4899",
+        NodeType.DECISION.value: "#F97316",
+        NodeType.STAKEHOLDER.value: "#A855F7",
+        NodeType.WORKFLOW_STEP.value: "#6366F1",
+    }
+
+    node_x, node_y = [], []
+    node_colors, node_sizes, node_line_colors, node_line_widths = [], [], [], []
+    node_text, hover_texts = [], []
+
+    for n_id, data in G.nodes(data=True):
+        x, y = pos[n_id]
+        node_x.append(x)
+        node_y.append(y)
+        ntype = data.get("node_type", "")
+        base_color = color_map.get(ntype, "#94A3B8")
+
+        if n_id == focus_id:
+            node_sizes.append(32)
+            node_colors.append("#FFFFFF")
+            node_line_colors.append("#06B6D4")
+            node_line_widths.append(4)
+        elif n_id in upstream_ids:
+            node_sizes.append(24)
+            node_colors.append(base_color)
+            node_line_colors.append("#F59E0B")
+            node_line_widths.append(3)
+        elif n_id in downstream_ids:
+            node_sizes.append(24)
+            node_colors.append(base_color)
+            node_line_colors.append("#22D3EE")
+            node_line_widths.append(3)
+        else:
+            node_sizes.append(18)
+            node_colors.append(base_color)
+            node_line_colors.append("rgba(255, 255, 255, 0.45)")
+            node_line_widths.append(1.2)
+
+        node_text.append(n_id)
+        role = "TARGET FOCUS" if n_id == focus_id else ("▲ UPSTREAM RATIONALE" if n_id in upstream_ids else ("▼ DOWNSTREAM CONSEQUENCE" if n_id in downstream_ids else "UNLINKED SCOPE"))
+        hover_texts.append(
+            f"<b>{n_id} — {data.get('title','')}</b><br>"
+            f"Type: <span style='color:#38BDF8;'>{ntype}</span><br>"
+            f"Trace: <b>{role}</b><br>"
+            f"Status: {data.get('status','')}<br>"
+            f"<i>{data.get('desc','')[:95]}...</i>"
+        )
+
+    fig.add_trace(
+        go.Scatter(
+            x=node_x,
+            y=node_y,
+            mode="markers+text",
+            text=node_text,
+            textposition="top center",
+            textfont=dict(family="JetBrains Mono, monospace", size=10, color="#F8FAFC"),
+            hoverinfo="text",
+            hovertext=hover_texts,
+            marker=dict(
+                size=node_sizes,
+                color=node_colors,
+                line=dict(color=node_line_colors, width=node_line_widths),
+                opacity=0.95,
+            ),
+        )
+    )
+
+    fig.update_layout(
+        showlegend=False,
+        hoverlabel=dict(
+            bgcolor="#0A1020",
+            bordercolor="rgba(6, 182, 212, 0.6)",
+            font=dict(family="Plus Jakarta Sans, sans-serif", size=12, color="#FFFFFF"),
+        ),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        margin=dict(l=10, r=10, t=10, b=10),
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        height=480,
+    )
+    return fig
+
+
+def render_compliance_scorecard(datas: List[DataSource]) -> go.Figure:
+    """Renders a Plotly horizontal compliance readiness gauge bar chart."""
+    categories = ["Encryption (AES-256)", "PII Boundaries", "Access Protocols", "Data Retention", "Audit Confirmation"]
+    
+    total = len(datas) or 1
+    enc_pct = (sum(1 for d in datas if d.encryption_at_rest) / total) * 100
+    pii_pct = (sum(1 for d in datas if not d.contains_pii) / total) * 100
+    prot_pct = (sum(1 for d in datas if "API" in d.access_protocol or "OAuth" in d.access_protocol) / total) * 100
+    ret_pct = (sum(1 for d in datas if d.retention_days <= 365) / total) * 100
+    conf_pct = (sum(1 for d in datas if d.is_confirmed) / total) * 100
+    
+    scores = [enc_pct, pii_pct, prot_pct, ret_pct, conf_pct]
+    colors = ["#10B981" if s >= 80 else ("#F59E0B" if s >= 50 else "#F43F5E") for s in scores]
+    
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        y=categories,
+        x=scores,
+        orientation='h',
+        marker=dict(
+            color=colors,
+            line=dict(color='rgba(255,255,255,0.3)', width=1)
+        ),
+        text=[f"{s:.0f}%" for s in scores],
+        textposition='inside',
+        insidetextfont=dict(family='JetBrains Mono', color='#FFFFFF', size=11),
+        hoverinfo='x+y'
+    ))
+    fig.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        margin=dict(l=10, r=20, t=10, b=10),
+        xaxis=dict(range=[0, 105], showgrid=True, gridcolor='rgba(255,255,255,0.06)', ticksuffix='%', color='#94A3B8'),
+        yaxis=dict(color='#F8FAFC', tickfont=dict(family='JetBrains Mono', size=11)),
+        height=220,
+    )
+    return fig
 
 # ==============================================================================
 # 8. BOOTSTRAP & STATE INITIALIZATION
@@ -1658,6 +1920,14 @@ st.set_page_config(
 )
 
 st.markdown(MODERN_CSS, unsafe_allow_html=True)
+st.markdown(
+    """
+<div class="apple-scroll-track">
+    <div class="apple-scroll-bar"></div>
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
 if "graph" not in st.session_state:
     g = TraceabilityGraph()
@@ -1696,9 +1966,11 @@ edges = graph.all_edges()
 with st.sidebar:
     st.markdown(
         """
-    <div style="padding: 8px 4px 14px 4px;">
-        <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: #06B6D4; background: rgba(6,182,212,0.12); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(6,182,212,0.35); letter-spacing: 0.12em;">SYSTEMS WORKSPACE</span>
-        <div style="font-size: 1.5rem; font-weight: 800; color: #FFFFFF; letter-spacing: -0.03em; margin-top: 6px;">⬡ T R A C E</div>
+    <div style="padding: 10px 4px 14px 4px;">
+        <div style="margin-bottom: 10px;">
+            <span class="live-beacon"><span class="beacon-dot"></span><span>SYSTEMS ENGINE ONLINE</span></span>
+        </div>
+        <div style="font-size: 1.55rem; font-weight: 800; color: #FFFFFF; letter-spacing: -0.03em; margin-top: 6px;">⬡ T R A C E</div>
         <div style="font-size: 0.72rem; color: #64748B; letter-spacing: 0.04em;">AMBIGUOUS INTENT → EXECUTABLE SYSTEM</div>
     </div>
     """,
@@ -2087,21 +2359,67 @@ elif "05 // Workflows & Sequences" in st.session_state["selected_screen"]:
 
 elif "06 // Traceability Graph" in st.session_state["selected_screen"]:
     st.markdown("## Interactive Bidirectional Traceability Graph")
+    st.caption(
+        "Interactive physical topology map. Select any node to illuminate upstream rationales and downstream blast consequences."
+    )
+
     node_opts = {f"{n.id} — {n.title}": n.id for n in nodes}
-    focus_id = node_opts[st.selectbox("FOCUS NODE", list(node_opts.keys()))]
+    sel_col1, sel_col2 = st.columns([2.8, 1.2])
+    with sel_col1:
+        focus_id = node_opts[st.selectbox("TARGET INSPECTION NODE", list(node_opts.keys()))]
+    with sel_col2:
+        focused_node = next((n for n in nodes if n.id == focus_id), None)
+        f_type = focused_node.node_type.value if focused_node else "UNKNOWN"
+        st.markdown(
+            f'<div style="padding-top:28px;"><span class="chip chip-cyan" style="font-size:0.76rem;">FOCUS ENTITY: {f_type}</span></div>',
+            unsafe_allow_html=True,
+        )
+
+    # Render Plotly interactive network graph
+    fig = render_plotly_traceability_graph(graph, focus_id)
+    st.plotly_chart(fig, **get_stretch_kw(st.plotly_chart))
+
+    # Detailed Upstream & Downstream Drilldown Cards
     c_up, c_down = st.columns(2)
     with c_up:
-        st.markdown("#### Upstream Rationale")
-        for item in graph.trace_upstream(focus_id):
-            st.markdown(
-                f"- ▲ {item['relation']} `[{item['from_type']}]` **{item['from_id']}**"
-            )
+        st.markdown("#### ▲ Upstream Rationale & Origins")
+        up_items = graph.trace_upstream(focus_id)
+        if up_items:
+            for item in up_items:
+                st.markdown(
+                    f"""
+                    <div class="entity-card" style="padding:14px 18px; margin-bottom:10px;">
+                        <div class="entity-header" style="margin-bottom:6px; padding-bottom:6px;">
+                            <span class="entity-id">{item['from_id']}</span>
+                            <span class="chip chip-amber">{item['relation']}</span>
+                        </div>
+                        <div style="font-size:0.86rem; color:#CBD5E1;">Type: <b>{item['from_type']}</b></div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.info("No upstream dependencies detected (Root intent entity).")
+
     with c_down:
-        st.markdown("#### Downstream Consequence")
-        for item in graph.trace_downstream(focus_id):
-            st.markdown(
-                f"- ▼ {item['relation']} `[{item['to_type']}]` **{item['to_id']}**"
-            )
+        st.markdown("#### ▼ Downstream Impact & Breakage")
+        down_items = graph.trace_downstream(focus_id)
+        if down_items:
+            for item in down_items:
+                st.markdown(
+                    f"""
+                    <div class="entity-card" style="padding:14px 18px; margin-bottom:10px;">
+                        <div class="entity-header" style="margin-bottom:6px; padding-bottom:6px;">
+                            <span class="entity-id">{item['to_id']}</span>
+                            <span class="chip chip-cyan">{item['relation']}</span>
+                        </div>
+                        <div style="font-size:0.86rem; color:#CBD5E1;">Type: <b>{item['to_type']}</b></div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.info("No downstream dependents detected (Terminal leaf entity).")
 
 elif (
     "07 // System Architecture & ADRs" in st.session_state["selected_screen"]
@@ -2174,6 +2492,10 @@ elif (
             }
         )
 
+    st.markdown("#### Compliance Readiness Gauge")
+    st.plotly_chart(render_compliance_scorecard(datas), **get_stretch_kw(st.plotly_chart))
+
+    st.markdown("#### Data Store Governance Matrix")
     st.dataframe(
         pd.DataFrame(gov_rows),
         hide_index=True,
