@@ -1411,6 +1411,81 @@ MODERN_CSS = """
     }
 }
 
+
+/* Transform TRACE Sidebar Radio into Apple Pro Dark Navigation */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #090e1a 0%, #060913 100%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+section[data-testid="stSidebar"] [data-testid="stRadio"] > div {
+    gap: 5px !important;
+}
+section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > label {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.07) !important;
+    border-radius: 10px !important;
+    padding: 8px 12px !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: transform var(--duration-fast) var(--ease-apple), box-shadow var(--duration-fast) var(--ease-apple), background var(--duration-fast) ease, border-color var(--duration-fast) ease !important;
+    color: #94a3b8 !important;
+    font-size: 0.82rem !important;
+    font-family: var(--font-mono) !important;
+    font-weight: 500 !important;
+}
+section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > label:hover {
+    background: rgba(6, 182, 212, 0.1) !important;
+    border-color: rgba(6, 182, 212, 0.4) !important;
+    color: #22d3ee !important;
+    transform: translateX(4px) !important;
+    box-shadow: 0 4px 14px rgba(6, 182, 212, 0.15) !important;
+}
+section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked),
+section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > label[data-checked="true"] {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(59, 130, 246, 0.35) 100%) !important;
+    border-color: #06b6d4 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 18px rgba(6, 182, 212, 0.3) !important;
+    transform: translateX(3px) !important;
+}
+section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked) p,
+section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked) span {
+    color: #ffffff !important;
+}
+/* Hide circular radio input dots */
+section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
+    display: none !important;
+}
+section[data-testid="stSidebar"] [data-testid="stRadio"] input[type="radio"] {
+    display: none !important;
+}
+section[data-testid="stSidebar"] [data-testid="stRadio"] div[data-testid="stMarkdownContainer"] p {
+    margin: 0 !important;
+}
+
+/* Always-visible Apple scroll track */
+#apple-scroll-progress-wrap {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 4px !important;
+    z-index: 99999999 !important;
+    pointer-events: none !important;
+    background: rgba(6, 182, 212, 0.15) !important;
+}
+#apple-scroll-bar-indicator {
+    height: 100% !important;
+    width: 10% !important;
+    background: linear-gradient(90deg, #06B6D4 0%, #3B82F6 35%, #8B5CF6 70%, #EC4899 100%) !important;
+    box-shadow: 0 0 14px rgba(6, 182, 212, 0.95), 0 0 24px rgba(139, 92, 246, 0.7) !important;
+    border-radius: 0 3px 3px 0 !important;
+    transition: width 60ms linear !important;
+}
+
 /* Live Telemetry Beacon (Dynamic Island style) */
 .live-beacon {
     display: inline-flex;
