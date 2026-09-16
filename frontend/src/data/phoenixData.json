@@ -1,0 +1,545 @@
+{
+  "brief": "EXECUTIVE BRIEF: Project Phoenix: Renewal Intelligence System\nOur B2B SaaS ARR growth has decelerated because net revenue retention fell from 108% to 91% over the past four quarters. Account Managers (AMs) and Customer Success Managers (CSMs) report being blindsided by account cancellations.\n\nCritical signals are fragmented across the enterprise:\n- Contract values, renewal milestones, and terms reside in Salesforce CRM.\n- Product telemetry and daily active user seats reside in Snowflake.\n- Customer sentiment, complaints, and ticket escalations reside in Zendesk.\n- Relationship nuances are trapped in Account Managers' private email threads.\n\nSales leadership insists on an 'AI-powered real-time churn prediction engine' that automatically notifies managers and triggers interventions before customers cancel. Meanwhile, Customer Success insists that no automated outreach should ever occur without mandatory human sign-off from the dedicated CSM. Data Engineering warns that product telemetry is refreshed only as a 24-hour nightly batch, making sub-minute 'real-time' monitoring architecturally questionable.",
+  "nodes": [
+    {
+      "id": "BO-001",
+      "node_type": "BUSINESS_OUTCOME",
+      "title": "Restore Net Revenue Retention to 105%+",
+      "description": "Reclaim trailing 4-quarter NRR from 91% to 105%+ by mitigating preventable SaaS account cancellations.",
+      "epistemic_status": "SOURCE_FACT",
+      "validation_status": "VALIDATED_BY_HUMAN",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": "VP Customer Success",
+      "tags": [],
+      "metadata": {
+        "target_metric": "NRR >= 105%",
+        "timeline": "Q4"
+      }
+    },
+    {
+      "id": "PRB-001",
+      "node_type": "PROBLEM",
+      "title": "Fragmented Customer Risk Telemetry",
+      "description": "Account health signals are siloed across CRM, product telemetry, Zendesk tickets, and email threads.",
+      "epistemic_status": "SOURCE_FACT",
+      "validation_status": "VALIDATED_BY_HUMAN",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {
+        "business_impact": "CSMs miss leading churn indicators, leaving inadequate runway for interventions."
+      }
+    },
+    {
+      "id": "STK-001",
+      "node_type": "STAKEHOLDER",
+      "title": "Customer Success Leadership",
+      "description": "Accountable for gross retention, customer health indexing, and churn mitigation.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": "CS Org",
+      "tags": [],
+      "metadata": {
+        "department": "Customer Success",
+        "role_level": "Executive"
+      }
+    },
+    {
+      "id": "STK-002",
+      "node_type": "STAKEHOLDER",
+      "title": "Account Management Team",
+      "description": "Frontline owners of renewal commercial quotas, pricing negotiations, and upsell pipelines.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": "Sales Org",
+      "tags": [],
+      "metadata": {
+        "department": "Sales",
+        "role_level": "Operational"
+      }
+    },
+    {
+      "id": "GOAL-001",
+      "node_type": "GOAL",
+      "title": "Identify Renewal Risk >=60 Days in Advance",
+      "description": "Provide synthesized early warning indicators to AMs with sufficient operational lead time to intervene.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "VALIDATED_BY_HUMAN",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {}
+    },
+    {
+      "id": "REQ-001",
+      "node_type": "REQUIREMENT",
+      "title": "Multi-Source Risk Classification Engine",
+      "description": "System shall evaluate accounts daily against composite telemetry, ticket escalations, and commercial indicators.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "VALIDATED_BY_HUMAN",
+      "source_reference": "Brief Section 2",
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": "Data Product Team",
+      "tags": [],
+      "metadata": {},
+      "req_type": "FUNCTIONAL",
+      "priority": "CRITICAL",
+      "acceptance_criteria": [
+        "Given an account with a 30% drop in active seats over 14 days, when daily evaluation executes, then health status shifts to AT_RISK.",
+        "System provides traceable evidence citations for all risk score calculations."
+      ],
+      "is_ambiguous": false,
+      "ambiguity_notes": [],
+      "has_conflict": false,
+      "conflict_notes": [],
+      "story_points": 8,
+      "t_shirt_size": "L"
+    },
+    {
+      "id": "REQ-002",
+      "node_type": "REQUIREMENT",
+      "title": "Autonomous Real-Time Intervention Triggering",
+      "description": "System shall monitor accounts in real-time and automatically trigger customer outreach without delay.",
+      "epistemic_status": "SOURCE_FACT",
+      "validation_status": "FLAGGED_AMBIGUOUS",
+      "source_reference": "Brief Section 3",
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": "Sales Leadership",
+      "tags": [],
+      "metadata": {},
+      "req_type": "FUNCTIONAL",
+      "priority": "HIGH",
+      "acceptance_criteria": [],
+      "is_ambiguous": true,
+      "ambiguity_notes": [
+        "Operational Latency Undefined ('real-time')",
+        "Autonomous intervention mechanism unquantified"
+      ],
+      "has_conflict": true,
+      "conflict_notes": [
+        "Directly conflicts with REQ-003 (Mandatory Human Sign-off)"
+      ],
+      "story_points": 13,
+      "t_shirt_size": "XL"
+    },
+    {
+      "id": "REQ-003",
+      "node_type": "REQUIREMENT",
+      "title": "Mandatory Human Review Gate for Interventions",
+      "description": "All outreach, concession offers, and retention plans must be manually reviewed and approved by the assigned CSM.",
+      "epistemic_status": "SOURCE_FACT",
+      "validation_status": "FLAGGED_CONFLICT",
+      "source_reference": "Brief Section 3",
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": "VP Customer Success",
+      "tags": [],
+      "metadata": {},
+      "req_type": "GOVERNANCE",
+      "priority": "CRITICAL",
+      "acceptance_criteria": [
+        "No communication shall dispatch to customer contacts without an authenticated CSM digital sign-off."
+      ],
+      "is_ambiguous": false,
+      "ambiguity_notes": [],
+      "has_conflict": true,
+      "conflict_notes": [
+        "Directly conflicts with REQ-002 (Autonomous Intervention Triggering)"
+      ],
+      "story_points": 5,
+      "t_shirt_size": "M"
+    },
+    {
+      "id": "DATA-001",
+      "node_type": "DATA_SOURCE",
+      "title": "Salesforce CRM",
+      "description": "Source of truth for account owners, contract dates, ARR, and commercial terms.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "system_of_record": "Salesforce Sales Cloud",
+      "update_frequency": "Near Real-time Webhook",
+      "access_protocol": "REST API / OData",
+      "contains_pii": true,
+      "is_confirmed": true,
+      "data_classification": "Restricted / Commercial",
+      "encryption_at_rest": true,
+      "retention_days": 730
+    },
+    {
+      "id": "DATA-002",
+      "node_type": "DATA_SOURCE",
+      "title": "Snowflake Telemetry Store",
+      "description": "Contains daily active seats, feature usage logs, and workspace activities.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "system_of_record": "Snowflake",
+      "update_frequency": "24-Hour Nightly Batch",
+      "access_protocol": "SQL Warehouse Connector",
+      "contains_pii": false,
+      "is_confirmed": true,
+      "data_classification": "Internal Operational",
+      "encryption_at_rest": true,
+      "retention_days": 365
+    },
+    {
+      "id": "DATA-003",
+      "node_type": "DATA_SOURCE",
+      "title": "Zendesk Support Tickets",
+      "description": "Support escalation tickets, CSAT scores, and ticket turnaround times.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "system_of_record": "Zendesk",
+      "update_frequency": "Hourly Poll",
+      "access_protocol": "REST API",
+      "contains_pii": true,
+      "is_confirmed": false,
+      "data_classification": "Restricted / Customer Notes",
+      "encryption_at_rest": true,
+      "retention_days": 365
+    },
+    {
+      "id": "COMP-001",
+      "node_type": "SYSTEM_COMPONENT",
+      "title": "Risk Scoring Service",
+      "description": "Inference service computing composite health scores using rules and statistical anomaly detection.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "layer": "Inference Layer",
+      "arch_type": "Deterministic Heuristics + XGBoost",
+      "lifecycle_state": "PROPOSED",
+      "monthly_infra_cost": 320
+    },
+    {
+      "id": "COMP-002",
+      "node_type": "SYSTEM_COMPONENT",
+      "title": "CSM Intervention Console",
+      "description": "Web portal allowing account teams to inspect evidence, adjust risk weights, and authorize playbooks.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "layer": "Presentation Layer",
+      "arch_type": "React SPA + Python Backend",
+      "lifecycle_state": "PROPOSED",
+      "monthly_infra_cost": 150
+    },
+    {
+      "id": "STEP-001",
+      "node_type": "WORKFLOW_STEP",
+      "title": "Daily Telemetry & Sentiment Join",
+      "description": "Nightly pipeline pulls Snowflake usage metrics and joins against active Salesforce contracts.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "sequence_index": 1,
+      "actor_id": "SYSTEM",
+      "system_id": "COMP-001",
+      "inputs": [
+        "DATA-001",
+        "DATA-002"
+      ],
+      "outputs": [
+        "UnifiedAccountProfile"
+      ]
+    },
+    {
+      "id": "STEP-002",
+      "node_type": "WORKFLOW_STEP",
+      "title": "CSM Risk Review & Approval",
+      "description": "CSM logs into console, inspects flagged account evidence, and authorizes customized intervention.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "sequence_index": 2,
+      "actor_id": "STK-001",
+      "system_id": "COMP-002",
+      "inputs": [
+        "UnifiedAccountProfile"
+      ],
+      "outputs": [
+        "ApprovedInterventionPlan"
+      ]
+    },
+    {
+      "id": "TEST-001",
+      "node_type": "TEST_CASE",
+      "title": "Verify Risk Classification Evidence Attribution",
+      "description": "Ensure every risk notification exposes verifiable audit data points.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "requirement_id": "REQ-001",
+      "given": "An account with a 40% seat usage drop over 14 days and 2 open Zendesk escalations",
+      "when": "Daily health scoring pipeline executes",
+      "then": "Account state transitions to 'HIGH_RISK' and cites seat drop and open tickets as direct evidence.",
+      "is_automated": true
+    },
+    {
+      "id": "Q-001",
+      "node_type": "QUESTION",
+      "title": "Operational Definition of 'Real-Time'",
+      "description": "Does the business require sub-minute streaming alerts, or is a daily 24-hour batch refresh acceptable?",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "severity": "CRITICAL",
+      "assigned_stakeholder": "Customer Success Leadership",
+      "impact_description": "Determines whether architecture requires an Apache Kafka streaming backbone or a warehouse query.",
+      "resolution": null,
+      "is_resolved": false
+    },
+    {
+      "id": "Q-002",
+      "node_type": "QUESTION",
+      "title": "PII Redaction Strategy for Support Notes",
+      "description": "Are free-form customer complaint notes permissible inside the ML feature store without masking?",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "severity": "HIGH",
+      "assigned_stakeholder": "Account Management Team",
+      "impact_description": "Determines regulatory GDPR/CCPA boundary and DLP pipeline necessity.",
+      "resolution": null,
+      "is_resolved": false
+    },
+    {
+      "id": "ASM-001",
+      "node_type": "ASSUMPTION",
+      "title": "24-Hour Telemetry Freshness Adequacy",
+      "description": "Assumes 24-hour telemetry batch latency is sufficient to catch renewal churn patterns.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "impact_level": "HIGH",
+      "validation_path": "Confirm typical enterprise B2B churn signal latency with Customer Success leadership.",
+      "is_verified": false
+    },
+    {
+      "id": "DEC-001",
+      "node_type": "DECISION",
+      "title": "Human-in-the-Loop Intervention Protocol",
+      "description": "System generates recommended playbooks; frontline CSM retains sole authorization to trigger outreach.",
+      "epistemic_status": "INTERPRETATION",
+      "validation_status": "PROPOSED_BY_AI",
+      "source_reference": null,
+      "raw_source_text": null,
+      "confidence": 1.0,
+      "owner": null,
+      "tags": [],
+      "metadata": {},
+      "decision_maker": "VP Customer Success & VP Sales",
+      "alternatives_considered": [
+        "Full Autonomous Execution",
+        "Fully Manual Review"
+      ],
+      "tradeoff_summary": "Eliminates risk of unreviewed automated outreach while maintaining structured intervention."
+    }
+  ],
+  "edges": [
+    {
+      "source_id": "PRB-001",
+      "relation": "ADDRESSES",
+      "target_id": "BO-001",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "PRB-001",
+      "relation": "EXPERIENCED_BY",
+      "target_id": "STK-001",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "GOAL-001",
+      "relation": "SUPPORTS",
+      "target_id": "BO-001",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "REQ-001",
+      "relation": "JUSTIFIES",
+      "target_id": "GOAL-001",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "REQ-001",
+      "relation": "DEPENDS_ON",
+      "target_id": "DATA-001",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "REQ-001",
+      "relation": "DEPENDS_ON",
+      "target_id": "DATA-002",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "REQ-001",
+      "relation": "IMPLEMENTED_BY",
+      "target_id": "COMP-001",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "REQ-001",
+      "relation": "VALIDATED_BY",
+      "target_id": "TEST-001",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "REQ-002",
+      "relation": "CONFLICTS_WITH",
+      "target_id": "REQ-003",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "REQ-002",
+      "relation": "CLARIFIED_BY",
+      "target_id": "Q-001",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "COMP-001",
+      "relation": "FOUNDED_ON",
+      "target_id": "ASM-001",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "STEP-001",
+      "relation": "IMPLEMENTED_BY",
+      "target_id": "COMP-001",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "STEP-002",
+      "relation": "IMPLEMENTED_BY",
+      "target_id": "COMP-002",
+      "confidence": 1.0
+    },
+    {
+      "source_id": "DEC-001",
+      "relation": "JUSTIFIES",
+      "target_id": "REQ-003",
+      "confidence": 1.0
+    }
+  ],
+  "readiness": {
+    "total_score": 81.8,
+    "dimensions": {
+      "Problem Clarity": {
+        "score": 1.0,
+        "weight": 0.15,
+        "notes": "1/1 problems quantified."
+      },
+      "Stakeholder Alignment": {
+        "score": 1.0,
+        "weight": 0.1,
+        "notes": "2/2 stakeholders verified."
+      },
+      "Requirement Precision": {
+        "score": 0.67,
+        "weight": 0.2,
+        "notes": "2/3 unambiguous with testable criteria."
+      },
+      "Data Readiness": {
+        "score": 0.67,
+        "weight": 0.15,
+        "notes": "2/3 confirmed systems of record."
+      },
+      "Workflow Precision": {
+        "score": 1.0,
+        "weight": 0.1,
+        "notes": "2/2 steps mapped to actor/system."
+      },
+      "Architecture Bounds": {
+        "score": 1.0,
+        "weight": 0.1,
+        "notes": "2/2 components structurally bounded."
+      },
+      "Testability Coverage": {
+        "score": 0.33,
+        "weight": 0.1,
+        "notes": "1/3 requirements have verified tests."
+      },
+      "Governance & Security": {
+        "score": 1.0,
+        "weight": 0.1,
+        "notes": "3/3 sources cataloged for privacy."
+      }
+    },
+    "blockers": [
+      "TEST BLOCKER: Under 50% test coverage for defined requirements."
+    ],
+    "is_ready": false
+  }
+}
