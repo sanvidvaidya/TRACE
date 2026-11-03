@@ -11,7 +11,10 @@ from typing import Any
 
 
 def normalize(path: str) -> str:
-    return path.replace("\\", "/").lstrip("./")
+    path = path.replace("\\", "/")
+    while path.startswith("./"):
+        path = path[2:]
+    return path
 
 
 def matches(pattern: str, path: str) -> bool:

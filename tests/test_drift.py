@@ -76,3 +76,9 @@ def test_all_profile_reports_shared_paths_against_both_sets():
 def test_invalid_profile_errors():
     with pytest.raises(ValueError):
         CONFIG.profile("not-a-profile")
+
+
+def test_hidden_github_workflow_path_is_normalized_without_dropping_dot():
+    result = run([".github/workflows/trace-drift-check.yml"])
+    assert result["file_to_nodes"][".github/workflows/trace-drift-check.yml"] == ["TRACE-DRIFT"]
+    assert result["orphan_files"] == []
