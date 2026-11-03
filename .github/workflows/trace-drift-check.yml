@@ -1,0 +1,79 @@
+name: TRACE Architecture Drift Verification
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Architecture profile to audit
+        required: true
+        default: trace_engine
+        type: choice
+        options: [phoenix, trace_engine, all]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  drift:
+    name: Deterministic drift verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install test dependencies
+        run: pip install -r requirements.txt pytest
+      - name: Test verifier
+        run: pytest -q tests/test_drift.py
+      - name: Resolve profile and revision range
+        id: context
+        shell: bash
+        run: |
+          PROFILE="trace_engine"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then PROFILE="${{ inputs.profile }}"; fi
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            RANGE="${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}"
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            BEFORE="${{ github.event.before }}"
+            if [[ -z "$BEFORE" || "$BEFORE" =~ ^0+$ ]]; then BEFORE="$(git rev-parse HEAD~1 2>/dev/null || git hash-object -t tree /dev/null)"; fi
+            RANGE="$BEFORE...${{ github.sha }}"
+          else
+            RANGE="HEAD~1...HEAD"
+          fi
+          echo "profile=$PROFILE" >> "$GITHUB_OUTPUT"
+          echo "range=$RANGE" >> "$GITHUB_OUTPUT"
+      - name: Generate reports
+        id: report
+        run: |
+          python trace_drift.py --git-diff '${{ steps.context.outputs.range }}' --profile '${{ steps.context.outputs.profile }}' --format markdown --output trace-drift-report.md
+          python trace_drift.py --git-diff '${{ steps.context.outputs.range }}' --profile '${{ steps.context.outputs.profile }}' --format json --output trace-drift-report.json
+          STATUS=$(python -c 'import json; print(json.load(open("trace-drift-report.json"))["status"])')
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+      - name: Add report to job summary
+        if: always() && hashFiles('trace-drift-report.md') != ''
+        run: cat trace-drift-report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Comment on pull request
+        if: github.event_name == 'pull_request' && hashFiles('trace-drift-report.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: gh pr comment "$PR_NUMBER" --body-file trace-drift-report.md
+      - name: Enforce high and critical drift gate
+        if: steps.report.outputs.status == 'DRIFT_BLOCKED'
+        run: |
+          echo "TRACE found high or critical drift; review the report and address it before merging."
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always() && hashFiles('trace-drift-report.*') != ''
+        with:
+          name: trace-drift-verification-report
+          path: trace-drift-report.*

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://trace.systems/schemas/mappings.v1.json",
+  "version": "1.0.0",
+  "description": "Explicit, profile-separated component-to-code mappings and trace links for drift verification.",
+  "profiles": {
+    "phoenix": {
+      "title": "Project Phoenix (Renewal Intelligence System)",
+      "description": "Illustrative mappings for the Phoenix case-study architecture; not a claim that production connectors exist in TRACE.",
+      "mappings": [
+        {
+          "node_id": "COMP-001",
+          "node_type": "SYSTEM_COMPONENT",
+          "title": "Risk Scoring Service",
+          "layer": "Inference Layer",
+          "owner": "Data Product Team",
+          "criticality": "CRITICAL",
+          "file_patterns": ["app.py"],
+          "associated_tests": ["TEST-001"]
+        },
+        {
+          "node_id": "COMP-002",
+          "node_type": "SYSTEM_COMPONENT",
+          "title": "CSM Intervention Console",
+          "layer": "Presentation Layer",
+          "owner": "Frontend Engineering",
+          "criticality": "HIGH",
+          "file_patterns": ["frontend/src/**", "frontend/index.html", "frontend/vite.config.ts"],
+          "associated_tests": []
+        },
+        {
+          "node_id": "DATA-001",
+          "node_type": "DATA_SOURCE",
+          "title": "Salesforce CRM",
+          "system_of_record": "Salesforce Sales Cloud",
+          "owner": "Data Engineering",
+          "criticality": "HIGH",
+          "file_patterns": ["integrations/salesforce/**", "connectors/salesforce/**", "schemas/salesforce/**"]
+        },
+        {
+          "node_id": "DATA-002",
+          "node_type": "DATA_SOURCE",
+          "title": "Snowflake Telemetry Store",
+          "system_of_record": "Snowflake",
+          "owner": "Data Engineering",
+          "criticality": "HIGH",
+          "file_patterns": ["integrations/snowflake/**", "data_warehouse/**", "schemas/telemetry/**"]
+        },
+        {
+          "node_id": "DATA-003",
+          "node_type": "DATA_SOURCE",
+          "title": "Zendesk Support Tickets",
+          "system_of_record": "Zendesk",
+          "owner": "Data Engineering",
+          "criticality": "MEDIUM",
+          "file_patterns": ["integrations/zendesk/**", "schemas/zendesk/**"]
+        },
+        {
+          "node_id": "TEST-001",
+          "node_type": "TEST_CASE",
+          "title": "Verify Risk Classification Evidence Attribution",
+          "requirement_id": "REQ-001",
+          "file_patterns": ["tests/test_risk_scoring.py"]
+        }
+      ],
+      "graph": {
+        "nodes": [
+          {"id": "BO-001", "node_type": "BUSINESS_OUTCOME", "title": "Restore Net Revenue Retention to 105%+"},
+          {"id": "GOAL-001", "node_type": "GOAL", "title": "Identify Renewal Risk >=60 Days in Advance"},
+          {"id": "REQ-001", "node_type": "REQUIREMENT", "title": "Multi-Source Risk Classification Engine", "validation_status": "VALIDATED_BY_HUMAN"},
+          {"id": "REQ-002", "node_type": "REQUIREMENT", "title": "Autonomous Real-Time Intervention Triggering", "is_ambiguous": true, "has_conflict": true, "flags": ["Operational Latency Undefined", "Conflicts with mandatory human sign-off"]},
+          {"id": "REQ-003", "node_type": "REQUIREMENT", "title": "Mandatory Human Review Gate for Interventions", "has_conflict": true, "flags": ["Conflicts with autonomous intervention requirement"]},
+          {"id": "COMP-001", "node_type": "SYSTEM_COMPONENT", "title": "Risk Scoring Service"},
+          {"id": "COMP-002", "node_type": "SYSTEM_COMPONENT", "title": "CSM Intervention Console"},
+          {"id": "DATA-001", "node_type": "DATA_SOURCE", "title": "Salesforce CRM"},
+          {"id": "DATA-002", "node_type": "DATA_SOURCE", "title": "Snowflake Telemetry Store"},
+          {"id": "TEST-001", "node_type": "TEST_CASE", "title": "Verify Risk Classification Evidence Attribution"}
+        ],
+        "edges": [
+          {"from": "GOAL-001", "to": "BO-001", "relation": "SUPPORTS"},
+          {"from": "REQ-001", "to": "GOAL-001", "relation": "JUSTIFIES"},
+          {"from": "REQ-001", "to": "DATA-001", "relation": "DEPENDS_ON"},
+          {"from": "REQ-001", "to": "DATA-002", "relation": "DEPENDS_ON"},
+          {"from": "REQ-001", "to": "COMP-001", "relation": "IMPLEMENTED_BY"},
+          {"from": "REQ-001", "to": "TEST-001", "relation": "VALIDATED_BY"},
+          {"from": "REQ-002", "to": "COMP-002", "relation": "IMPLEMENTED_BY"},
+          {"from": "REQ-003", "to": "COMP-002", "relation": "IMPLEMENTED_BY"}
+        ]
+      }
+    },
+    "trace_engine": {
+      "title": "TRACE Core Architecture",
+      "description": "TRACE's own source components, with independent explicit source and trace links.",
+      "mappings": [
+        {"node_id": "TRACE-CORE", "node_type": "SYSTEM_COMPONENT", "title": "TRACE Core Ontology & Graph Engine", "layer": "Core Engine", "owner": "Systems Engineering", "criticality": "CRITICAL", "file_patterns": ["app.py"], "associated_tests": ["TRACE-TEST-SUITE"]},
+        {"node_id": "TRACE-API", "node_type": "SYSTEM_COMPONENT", "title": "TRACE REST API Gateway", "layer": "API Layer", "owner": "Backend Engineering", "criticality": "CRITICAL", "file_patterns": ["backend_api.py"], "associated_tests": ["TRACE-TEST-SUITE"]},
+        {"node_id": "TRACE-DRIFT", "node_type": "SYSTEM_COMPONENT", "title": "TRACE GitHub Drift Verification Engine", "layer": "Governance & CI Layer", "owner": "Platform & Quality", "criticality": "CRITICAL", "file_patterns": ["trace_drift.py", "trace_mappings.json", ".github/workflows/trace-drift-check.yml"], "associated_tests": ["TRACE-TEST-SUITE"]},
+        {"node_id": "TRACE-FRONTEND", "node_type": "SYSTEM_COMPONENT", "title": "TRACE Spatial Systems Canvas & HUD", "layer": "Presentation Layer", "owner": "Frontend Engineering", "criticality": "HIGH", "file_patterns": ["frontend/src/**", "frontend/index.html", "frontend/package.json"], "associated_tests": []},
+        {"node_id": "TRACE-TEST-SUITE", "node_type": "TEST_CASE", "title": "TRACE Automated Verification Test Suite", "file_patterns": ["tests/test_*.py"]}
+      ],
+      "graph": {
+        "nodes": [
+          {"id": "TRACE-OUTCOME", "node_type": "BUSINESS_OUTCOME", "title": "Keep TRACE's architecture and implementation verifiably aligned"},
+          {"id": "TRACE-REQ-MAPPING", "node_type": "REQUIREMENT", "title": "Every governed component has an explicit, configurable repository mapping"},
+          {"id": "TRACE-REQ-DRIFT", "node_type": "REQUIREMENT", "title": "Changes to governed components surface traced impacts and linked test coverage"},
+          {"id": "TRACE-REQ-UI", "node_type": "REQUIREMENT", "title": "TRACE's frontend remains a distinct presentation-layer component"},
+          {"id": "TRACE-CORE", "node_type": "SYSTEM_COMPONENT", "title": "TRACE Core Ontology & Graph Engine"},
+          {"id": "TRACE-API", "node_type": "SYSTEM_COMPONENT", "title": "TRACE REST API Gateway"},
+          {"id": "TRACE-DRIFT", "node_type": "SYSTEM_COMPONENT", "title": "TRACE GitHub Drift Verification Engine"},
+          {"id": "TRACE-FRONTEND", "node_type": "SYSTEM_COMPONENT", "title": "TRACE Spatial Systems Canvas & HUD"},
+          {"id": "TRACE-TEST-SUITE", "node_type": "TEST_CASE", "title": "TRACE Automated Verification Test Suite"}
+        ],
+        "edges": [
+          {"from": "TRACE-REQ-MAPPING", "to": "TRACE-CORE", "relation": "IMPLEMENTED_BY"},
+          {"from": "TRACE-REQ-DRIFT", "to": "TRACE-CORE", "relation": "IMPLEMENTED_BY"},
+          {"from": "TRACE-REQ-DRIFT", "to": "TRACE-API", "relation": "IMPLEMENTED_BY"},
+          {"from": "TRACE-REQ-DRIFT", "to": "TRACE-DRIFT", "relation": "IMPLEMENTED_BY"},
+          {"from": "TRACE-REQ-UI", "to": "TRACE-FRONTEND", "relation": "IMPLEMENTED_BY"},
+          {"from": "TRACE-REQ-DRIFT", "to": "TRACE-TEST-SUITE", "relation": "VALIDATED_BY"},
+          {"from": "TRACE-REQ-MAPPING", "to": "TRACE-OUTCOME", "relation": "SUPPORTS"},
+          {"from": "TRACE-REQ-DRIFT", "to": "TRACE-OUTCOME", "relation": "SUPPORTS"}
+        ]
+      }
+    }
+  },
+  "ignore_patterns": ["*.md", ".gitignore", "docs/**", ".streamlit/**", "frontend/.gitignore", "frontend/.oxlintrc.json", "frontend/README.md", "frontend/public/**", "LICENSE"]
+}
