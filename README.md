@@ -84,3 +84,19 @@ It models a real-world scenario where a B2B company wants to stop customer churn
 ## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## 🛡️ Continuous Architecture Drift Verification
+
+TRACE includes a deterministic drift verifier that checks changed repository files against explicit component mappings and the traceability graph. Phoenix case-study mappings and TRACE's own source mappings are maintained as separate profiles in `trace_mappings.json`, so demo-system architecture does not get conflated with TRACE's implementation.
+
+Run the verifier locally:
+
+```bash
+python trace_drift.py --git-diff origin/main...HEAD --profile trace_engine
+```
+
+Available profiles are `phoenix`, `trace_engine`, and `all`. Edit each profile's `file_patterns` to declare which files belong to an architecture node. Use narrow paths or globs; a modified component with associated tests but no changed mapped test is reported as untested drift. Unmapped, non-ignored files are surfaced as review findings.
+
+The GitHub Actions workflow runs the automated tests on pull requests and audits the changed files. Critical or high untested drift blocks the check; unmapped files and medium findings are reported for review. The mapping file includes an `ignore_patterns` list for intentional exclusions.
+
+See [`docs/DRIFT_VERIFICATION.md`](docs/DRIFT_VERIFICATION.md) for the mapping schema, profiles, severity model, local commands, and CI setup.
+
