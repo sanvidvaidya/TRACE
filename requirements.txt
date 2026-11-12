@@ -2,4 +2,4 @@ streamlit
 pydantic
 networkx
 plotly
-pandas
+pandaspyyaml
