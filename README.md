@@ -84,6 +84,19 @@ It models a real-world scenario where a B2B company wants to stop customer churn
 ## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## 🗄️ Multi-Project Persistence & Automated Ingestion
+
+TRACE features an enterprise-grade SQLite persistence layer and automated architecture ingestion engine:
+* **Multi-Project Isolated Graphs:** Create, mutate, snapshot, and query isolated architecture graphs with zero cross-project collision.
+* **OpenAPI 3.x Ingestion:** Automatically parse REST endpoints into `SYSTEM_COMPONENT` nodes, data schemas into `DATA_SOURCE` models, and security schemes into verified requirements.
+* **Terraform & Cloud Ingestion:** Extract cloud resources from plan/state JSON, categorize infrastructure layers (Compute, Data, Storage, Ingress), and build deterministic dependency graphs.
+* **Container Manifest Ingestion:** Ingest Docker Compose and Kubernetes multi-document YAML manifests, resolving label selectors into live service topology.
+* **Point-in-Time Versioned Snapshots:** Capture immutable versioned snapshots (`v1`, `v2`) for architectural governance and auditability.
+
+See [`docs/PERSISTENCE_AND_INGESTION.md`](docs/PERSISTENCE_AND_INGESTION.md) for full REST API specifications and integration guides.
+
+---
+
 ## 🛡️ Continuous Architecture Drift Verification
 
 TRACE includes a deterministic drift verifier that checks changed repository files against explicit component mappings and the traceability graph. Phoenix case-study mappings and TRACE's own source mappings are maintained as separate profiles in `trace_mappings.json`, so demo-system architecture does not get conflated with TRACE's implementation.
