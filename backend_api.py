@@ -19,6 +19,7 @@ from urllib.parse import urlparse, parse_qs
 import app
 from trace_storage import TraceStorage
 from trace_ingest import ingest_openapi, ingest_terraform, ingest_container_manifest
+from trace_otel import TraceRuntimeStore, ArchitecturalCorrelationEngine, parse_opentelemetry_json, ObservedFlow
 
 MAX_BODY_SIZE = 2 * 1024 * 1024  # 2 MB ceiling
 ALLOWED_ORIGIN = os.environ.get("TRACE_ALLOWED_ORIGIN", "http://localhost:5173")
@@ -26,6 +27,10 @@ ALLOWED_ORIGIN = os.environ.get("TRACE_ALLOWED_ORIGIN", "http://localhost:5173")
 # Initialize persistent SQLite store
 STORAGE = TraceStorage()
 STORAGE.seed_default_project_phoenix()
+
+# Initialize OpenTelemetry and eBPF runtime store
+RUNTIME_STORE = TraceRuntimeStore()
+CORRELATION_ENGINE = ArchitecturalCorrelationEngine(RUNTIME_STORE)
 
 
 class TraceAPIHandler(BaseHTTPRequestHandler):
@@ -165,6 +170,45 @@ class TraceAPIHandler(BaseHTTPRequestHandler):
                 readiness = app.ReadinessEngine.evaluate(nodes)
                 self._send_json(readiness)
 
+            elif path == "/api/traces/correlate":
+                project_id = params.get("project_id", ["project-phoenix"])[0]
+                graph_data = STORAGE.load_graph_data(project_id)
+                nodes = graph_data.get("nodes", [])
+                edges = graph_data.get("edges", [])
+                report = CORRELATION_ENGINE.correlate(project_id, nodes, edges)
+                self._send_json(report)
+
+            elif path == "/api/traces/shadow-dependencies":
+                project_id = params.get("project_id", ["project-phoenix"])[0]
+                graph_data = STORAGE.load_graph_data(project_id)
+                nodes = graph_data.get("nodes", [])
+                edges = graph_data.get("edges", [])
+                report = CORRELATION_ENGINE.correlate(project_id, nodes, edges)
+                self._send_json({
+                    "project_id": project_id,
+                    "shadow_dependencies": report["shadow_dependencies"],
+                    "shadow_risk_level": report["telemetry_summary"]["shadow_risk_level"],
+                    "total_shadow_dependencies": len(report["shadow_dependencies"])
+                })
+
+            elif path == "/api/traces/empirical-blast-radius":
+                project_id = params.get("project_id", ["project-phoenix"])[0]
+                node_id = params.get("node_id", ["COMP-001"])[0]
+                latency_spike = float(params.get("latency_ms", [600.0])[0])
+                error_rate = float(params.get("error_rate", [0.5])[0])
+                graph_data = STORAGE.load_graph_data(project_id)
+                nodes = graph_data.get("nodes", [])
+                edges = graph_data.get("edges", [])
+                sim = CORRELATION_ENGINE.simulate_empirical_blast_radius(
+                    project_id=project_id,
+                    failing_node=node_id,
+                    static_nodes=nodes,
+                    static_edges=edges,
+                    injected_latency_ms=latency_spike,
+                    injected_error_rate=error_rate
+                )
+                self._send_json(sim)
+
             elif path == "/api/snapshots":
                 project_id = params.get("project_id", ["project-phoenix"])[0]
                 snapshots = STORAGE.list_snapshots(project_id)
@@ -291,6 +335,44 @@ class TraceAPIHandler(BaseHTTPRequestHandler):
                     return
                 summary = ingest_container_manifest(manifest, project_id, STORAGE)
                 self._send_json(summary.to_dict(), 201)
+
+            elif path == "/api/traces/ingest":
+                project_id = payload.get("project_id", "project-phoenix")
+                fmt = payload.get("format", "opentelemetry").lower()
+                if fmt in ("opentelemetry", "otel"):
+                    spans_payload = payload.get("payload") or payload
+                    spans = parse_opentelemetry_json(spans_payload)
+                    count = RUNTIME_STORE.record_spans(project_id, spans)
+                    self._send_json({
+                        "project_id": project_id,
+                        "format": "opentelemetry",
+                        "recorded_spans": count,
+                        "status": "ingested"
+                    }, 201)
+                elif fmt in ("ebpf_flows", "ebpf", "flows"):
+                    raw_flows = payload.get("flows", [])
+                    flows = [
+                        ObservedFlow(
+                            source_service=rf.get("source_service", ""),
+                            target_service=rf.get("target_service", ""),
+                            bytes_sent=int(rf.get("bytes_sent", 0)),
+                            bytes_recv=int(rf.get("bytes_recv", 0)),
+                            latency_ms=float(rf.get("latency_ms", 0.0)),
+                            error_count=int(rf.get("error_count", 0)),
+                            protocol=rf.get("protocol", "tcp"),
+                            timestamp=rf.get("timestamp", "")
+                        )
+                        for rf in raw_flows if rf.get("source_service") and rf.get("target_service")
+                    ]
+                    count = RUNTIME_STORE.record_flows(project_id, flows)
+                    self._send_json({
+                        "project_id": project_id,
+                        "format": "ebpf_flows",
+                        "recorded_flows": count,
+                        "status": "ingested"
+                    }, 201)
+                else:
+                    self._send_json({"error": f"Unsupported format: {fmt}. Use 'opentelemetry' or 'ebpf_flows'"}, 400)
 
             else:
                 self._send_json({"error": f"Endpoint not found: {path}"}, 404)

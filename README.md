@@ -113,3 +113,15 @@ The GitHub Actions workflow runs the automated tests on pull requests and audits
 
 See [`docs/DRIFT_VERIFICATION.md`](docs/DRIFT_VERIFICATION.md) for the mapping schema, profiles, severity model, local commands, and CI setup.
 
+
+
+---
+
+## ⚡ Live OpenTelemetry & eBPF Runtime Stitching
+
+TRACE connects static topology graphs with live distributed trace spans and eBPF network flow logs ():
+- **Shadow Dependency Discovery:** Exposes unmapped runtime couplings bypassing architecture models.
+- **Continuous Telemetry Alignment:** Classifies edges as , , or .
+- **Empirical Blast Radius:** Simulates cascading latency degradation and timeout propagation weighted by observed call volumes.
+
+See [](docs/RUNTIME_OTEL_STITCHING.md) for endpoint specifications and schema details.

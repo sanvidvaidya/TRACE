@@ -288,6 +288,20 @@
           "associated_tests": [
             "TRACE-TEST-SUITE"
           ]
+        },
+        {
+          "node_id": "TRACE-OTEL",
+          "node_type": "SYSTEM_COMPONENT",
+          "title": "TRACE Live OpenTelemetry & eBPF Runtime Stitching Engine",
+          "layer": "Observability & Runtime Layer",
+          "owner": "Platform & Quality",
+          "criticality": "HIGH",
+          "file_patterns": [
+            "trace_otel.py"
+          ],
+          "associated_tests": [
+            "TRACE-TEST-SUITE"
+          ]
         }
       ],
       "graph": {
@@ -356,6 +370,16 @@
             "id": "TRACE-INGEST",
             "node_type": "SYSTEM_COMPONENT",
             "title": "TRACE Architecture Ingestion Engine"
+          },
+          {
+            "id": "TRACE-REQ-OTEL",
+            "node_type": "REQUIREMENT",
+            "title": "Correlate live distributed traces and eBPF flows to expose shadow dependencies and empirical blast radius"
+          },
+          {
+            "id": "TRACE-OTEL",
+            "node_type": "SYSTEM_COMPONENT",
+            "title": "TRACE Live OpenTelemetry & eBPF Runtime Stitching Engine"
           }
         ],
         "edges": [
@@ -426,6 +450,21 @@
           },
           {
             "from": "TRACE-REQ-INGEST",
+            "to": "TRACE-OUTCOME",
+            "relation": "SUPPORTS"
+          },
+          {
+            "from": "TRACE-REQ-OTEL",
+            "to": "TRACE-OTEL",
+            "relation": "IMPLEMENTED_BY"
+          },
+          {
+            "from": "TRACE-REQ-OTEL",
+            "to": "TRACE-TEST-SUITE",
+            "relation": "VALIDATED_BY"
+          },
+          {
+            "from": "TRACE-REQ-OTEL",
             "to": "TRACE-OUTCOME",
             "relation": "SUPPORTS"
           }
